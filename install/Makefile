@@ -111,5 +111,19 @@ install/all:
 	@ kubectl delete ns $(KAFKA_CLUSTER_NAMESPACE)
 	@ oc delete crds grafanadashboards.integreatly.org grafanadatasources.integreatly.org grafanas.integreatly.org
 
+.PHONY: install/preflight
+install/preflight: 
+	# check oc, kubectl, op env var, grafana env var
+	ifneq (, $(shell which oc 2> /dev/null))
+		# $(error Can't find oc. Please install and re-run)
+		@echo readthis
+	else
+		# $(error Can't find oc. Please install and re-run)
+		@echo readthis
+	endif
+	$(error Can't find oc. Please install and re-run)
+	
+
+
 .PHONY: install/all
-install/all: install/clean install/operator install/cluster install/monitoring install/grafana
+install/all: install/preflight install/clean install/operator install/cluster install/monitoring install/grafana
