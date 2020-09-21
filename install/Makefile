@@ -8,6 +8,7 @@ KAFKA_PVC_SIZE ?= 10Gi
 export GLOBAL_MONITORING_NAMESPACE ?= managed-services-monitoring-global
 export GLOBAL_THANOS_RECEIVER ?= kafka-thanos-receiver
 export GLOBAL_THANOS_QUERIER ?= kafka-thanos-querier
+export GLOBAL_GRAFANA ?= kafka-grafana-global
 
 RESOURCE_FILES_DIR ?= ./resources
 BUILD_DIR := build
