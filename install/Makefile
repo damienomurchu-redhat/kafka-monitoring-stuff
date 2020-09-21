@@ -3,6 +3,12 @@ export KAFKA_CLUSTER_NAMESPACE ?= kafka-cluster
 export KAFKA_PVC_SIZE ?= 10Gi
 PER_CLUSTER_MONITORING_NAMESPACE ?= managed-services-monitoring
 GLOBAL_MONITORING_NAMESPACE ?= managed-services-monitoring-global
+KAFKA_PVC_SIZE ?= 10Gi
+
+export GLOBAL_MONITORING_NAMESPACE ?= managed-services-monitoring-global
+export GLOBAL_THANOS_RECEIVER ?= kafka-thanos-receiver
+export GLOBAL_THANOS_QUERIER ?= kafka-thanos-querier
+
 RESOURCE_FILES_DIR ?= ./resources
 BUILD_DIR := build
 
