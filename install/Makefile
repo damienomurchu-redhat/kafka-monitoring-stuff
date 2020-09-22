@@ -69,4 +69,4 @@ install/kafka/monitoring:
 
 .PHONY: install/kafka/global
 install/kafka/global:
-	make -C resources/global all
+	make -C resources/monitoring-global all
