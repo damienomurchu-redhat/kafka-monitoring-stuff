@@ -3,7 +3,15 @@ export KAFKA_CLUSTER_NAMESPACE ?= kafka-cluster
 export KAFKA_PVC_SIZE ?= 10Gi
 PER_CLUSTER_MONITORING_NAMESPACE ?= managed-services-monitoring
 GLOBAL_MONITORING_NAMESPACE ?= managed-services-monitoring-global
-KAFKA_PVC_SIZE ?= 10Gi
+
+export STRIMZI_OPERATOR_NAMESPACE ?= kafka
+
+# export KAFKA_CLUSTER_NAMESPACE ?= openshift-kafka-cluster
+export KAFKA_CLUSTER_NAMESPACE ?= kafka
+
+export PER_CLUSTER_PROMETHEUS_NAMESPACE ?= managed-services-monitoring-prometheus
+export PER_CLUSTER_GRAFANA_NAMESPACE ?= managed-services-monitoring-grafana
+export PER_CLUSTER_PROMETHEUS ?= kafka-prometheus
 
 export GLOBAL_MONITORING_NAMESPACE ?= managed-services-monitoring-global
 export GLOBAL_THANOS_RECEIVER ?= kafka-thanos-receiver
@@ -20,10 +28,10 @@ install/cluster/monitoring:
 	@ cp $(RESOURCE_FILES_DIR)/monitoring-cluster/operatorgroup.yaml ./$(BUILD_DIR)/monitoring-cluster/
 	@ cp $(RESOURCE_FILES_DIR)/monitoring-cluster/sub.yaml ./$(BUILD_DIR)/monitoring-cluster/
 	@ cp $(RESOURCE_FILES_DIR)/monitoring-cluster/grafana.yaml ./$(BUILD_DIR)/monitoring-cluster/
-	@ sed -i.bak 's/<PER_CLUSTER_MONITORING_NAMESPACE>/$(PER_CLUSTER_MONITORING_NAMESPACE)/' ./$(BUILD_DIR)/monitoring-cluster/*.yaml
+	@ sed -i.bak 's/<PER_CLUSTER_GRAFANA_NAMESPACE>/$(PER_CLUSTER_GRAFANA_NAMESPACE)/' ./$(BUILD_DIR)/monitoring-cluster/*.yaml
 	
 	# create namepsace
-	@ -oc new-project $(PER_CLUSTER_MONITORING_NAMESPACE)
+	@ -oc new-project $(PER_CLUSTER_GRAFANA_NAMESPACE)
 
 	# create operatorgroup
 	@ oc apply -f ./$(BUILD_DIR)/monitoring-cluster/operatorgroup.yaml
@@ -38,8 +46,9 @@ install/cluster/monitoring:
 	@ oc apply -f ./$(BUILD_DIR)/monitoring-cluster/grafana.yaml
 
 	@ echo "Waiting for grafana pod to be ready"
-	@ for i in {1..12}; do oc -n $(PER_CLUSTER_MONITORING_NAMESPACE) get pod -l app=grafana -o name | grep "pod/grafana-deployment" && break || sleep 5; done
-	@ oc -n $(PER_CLUSTER_MONITORING_NAMESPACE) wait --for=condition=ready pod -l app=grafana
+	@ for i in {1..12}; do oc -n $(PER_CLUSTER_GRAFANA_NAMESPACE) get pod -l app=grafana -o name | grep "pod/grafana-deployment" && break || sleep 5; done
+
+	@make -C resources/monitoring-cluster/prometheus all
 
   # cleanup
 	@ rm -rf ./$(BUILD_DIR)
@@ -67,6 +76,6 @@ install/kafka/cr:
 install/kafka/monitoring:
 	make -C resources/kafka-monitoring all
 
-.PHONY: install/kafka/global
-install/kafka/global:
+.PHONY: install/global/monitoring
+install/global/monitoring:
 	make -C resources/monitoring-global all
