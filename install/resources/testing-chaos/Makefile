@@ -15,5 +15,11 @@ create/chaosengine/kafka-broker-pod-failure:
 	@kubectl apply -f ./chaosengines/pod-delete/serviceaccount.yaml
 	@kubectl apply -f ./chaosengines/pod-delete/chaosengine.yaml
 
+.PHONY: create/chaosengine/kafka-broker-pod-failure
+create/chaosengine/kafka-broker-pod-failure: 
+	@echo "create kafka-broker-pod-failure: $(KAFKA_CLUSTER_NAMESPACE)"
+	@kubectl apply -f ./chaosengines/kafka-broker-pod-failure/serviceaccount.yaml
+	@kubectl apply -f ./chaosengines/kafka-broker-pod-failure/chaosengine.yaml
+
 all: create/operator create/chaosexperiments create/chaosengine/pod-delete
 	@echo "Done deploying chaos experiments"
