@@ -12,17 +12,13 @@ create/operator:
 
 .PHONY: create/chaosexperiments
 create/chaosexperiments:
-	@echo "create chaosexperiments: $(KAFKA_CLUSTER_NAMESPACE)"
-	@kubectl apply -f ./chaosexperiments/chaosexperiments-generic.yaml -n $(KAFKA_CLUSTER_NAMESPACE)
-	@kubectl apply -f ./chaosexperiments/chaosexperiments-kafka.yaml -n $(KAFKA_CLUSTER_NAMESPACE)
+	@echo "create chaosexperiment CRDs"
+	@kubectl apply -f ./chaosexperiments/chaosexperiments-generic.yaml
+	@kubectl apply -f ./chaosexperiments/chaosexperiments-kafka.yaml
 
 .PHONY: create/chaosengine/pod-delete
 create/chaosengine/pod-delete: 
-	@echo "create pod-delete: $(KAFKA_CLUSTER_NAMESPACE)"
-	@cat ./chaosengines/pod-delete/serviceaccount.yaml | \
-		sed -e 's/<namespace>/$(KAFKA_CLUSTER_NAMESPACE)/g' | \
-		cat | oc apply -f -
-
+	@echo "create pod-delete chaosengine"
 	@cat ./chaosengines/pod-delete/chaosengine.yaml | \
     sed -e 's|<namespace>|$(KAFKA_CLUSTER_NAMESPACE)|g' | \
     sed -e 's|<pod-label>|$(POD_DELETE_APP_LABEL)|g' | \
