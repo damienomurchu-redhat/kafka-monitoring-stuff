@@ -6,10 +6,15 @@ POD_DELETE_DURATION ?= 60
 POD_DELETE_INTERVAL ?= 10
 POD_DELETE_FORCE ?= false
 
-.PHONY: create/operator
+.PHONY: create/operator/litmus
 create/operator:
 	@echo "create operator: litmus"
 	@kubectl apply -f ./operator/litmus-operator-v1.8.2.yaml
+
+.PHONY: create/operator/chaosscheduler
+create/operator/chaosscheduler: 
+	@echo "create operator: litmus"
+	@kubectl apply -f ./chaosscheduler/chaosscheduler-operator-v1.9.0.yaml
 
 .PHONY: create/chaosexperiments
 create/chaosexperiments:
@@ -30,5 +35,5 @@ create/chaosengine/pod-delete:
     sed -e 's|<force-delete>|$(POD_DELETE_FORCE)|g' | \
     cat | oc apply -f -
 
-all: create/operator create/chaosexperiments create/chaosengine/pod-delete
+all: create/operator create/operator/chaosscheduler create/chaosexperiments create/chaosengine/pod-delete
 	@echo "Done deploying chaos experiments"
