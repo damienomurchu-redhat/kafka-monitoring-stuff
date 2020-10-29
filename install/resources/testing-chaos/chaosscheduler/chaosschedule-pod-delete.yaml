@@ -8,14 +8,14 @@ spec:
     repeat:
       properties:
         #format should be like "10m" or "2h" accordingly for minutes and hours
-        minChaosInterval: "2m"   
+        minChaosInterval: "<chaos-schedule-interval>"   
       workDays:
-        includedDays: "Mon,Tue,Wed,Sat,Sun"
+        includedDays: "<chaos-schedule-included-days>"
       workHours:
         # format should be <starting-hour-number>-<ending-hour-number>(inclusive)
-        includedHours: 0-12
+        includedHours: <chaos-schedule-included-hours>
   #update to halt to pause
-  scheduleState: active
+  scheduleState: <chaos-schedule-state>
   engineTemplateSpec:
     appinfo:
       appns: '<namespace>'
@@ -23,7 +23,7 @@ spec:
       appkind: '<deployment-type>'
     annotationCheck: 'false'
     auxiliaryAppInfo: ''
-    chaosServiceAccount: pod-delete-sa
+    chaosServiceAccount: litmus-admin
     monitoring: false
     jobCleanUpPolicy: '<cleanup>'
     experiments:
