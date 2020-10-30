@@ -8,9 +8,9 @@ spec:
     repeat:
       properties:
         #format should be like "10m" or "2h" accordingly for minutes and hours
-        minChaosInterval: "<chaos-schedule-interval>"   
+        minChaosInterval: <chaos-schedule-interval>   
       workDays:
-        includedDays: "<chaos-schedule-included-days>"
+        includedDays: <chaos-schedule-included-days>
       workHours:
         # format should be <starting-hour-number>-<ending-hour-number>(inclusive)
         includedHours: <chaos-schedule-included-hours>
@@ -18,14 +18,14 @@ spec:
   scheduleState: <chaos-schedule-state>
   engineTemplateSpec:
     appinfo:
-      appns: '<namespace>'
-      applabel: '<pod-label>'
-      appkind: '<deployment-type>'
+      appns: <namespace>
+      applabel: <pod-label>
+      appkind: <deployment-type>
     annotationCheck: 'false'
     auxiliaryAppInfo: ''
     chaosServiceAccount: litmus-admin
     monitoring: false
-    jobCleanUpPolicy: '<cleanup>'
+    jobCleanUpPolicy: <cleanup>
     experiments:
       - name: pod-delete
         spec:
@@ -33,12 +33,12 @@ spec:
             env:
               # set chaos duration (in sec) as desired
               - name: TOTAL_CHAOS_DURATION
-                value: '<chaos-duration>'
+                value: <chaos-duration>
 
               # set chaos interval (in sec) as desired
               - name: CHAOS_INTERVAL
-                value: '<chaos-interval>'
+                value: <chaos-interval>
 
               # pod failures without '--force' & default terminationGracePeriodSeconds
               - name: FORCE
-                value: '<force-delete>'
+                value: <force-delete>
