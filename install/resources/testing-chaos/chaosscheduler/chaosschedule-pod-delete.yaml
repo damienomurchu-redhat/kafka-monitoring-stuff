@@ -8,7 +8,7 @@ spec:
     repeat:
       properties:
         #format should be like "10m" or "2h" accordingly for minutes and hours
-        minChaosInterval: <chaos-schedule-interval>   
+        minChaosInterval: "<chaos-schedule-interval>"   
       workDays:
         includedDays: <chaos-schedule-included-days>
       workHours:
@@ -33,12 +33,12 @@ spec:
             env:
               # set chaos duration (in sec) as desired
               - name: TOTAL_CHAOS_DURATION
-                value: <chaos-duration>
+                value: "<chaos-duration>"
 
               # set chaos interval (in sec) as desired
               - name: CHAOS_INTERVAL
-                value: <chaos-interval>
+                value: "<chaos-interval>"
 
               # pod failures without '--force' & default terminationGracePeriodSeconds
               - name: FORCE
-                value: <force-delete>
+                value: "<force-delete>"
