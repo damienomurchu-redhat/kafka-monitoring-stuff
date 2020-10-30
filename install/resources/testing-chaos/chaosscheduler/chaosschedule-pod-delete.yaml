@@ -1,4 +1,3 @@
-apiVersion: litmuschaos.io/v1alpha1
 kind: ChaosSchedule
 metadata:
   name: pod-delete
@@ -17,13 +16,14 @@ spec:
   #update to halt to pause
   scheduleState: <chaos-schedule-state>
   engineTemplateSpec:
+    engineState: active
     appinfo:
       appns: <namespace>
       applabel: <pod-label>
       appkind: <deployment-type>
     annotationCheck: 'false'
     auxiliaryAppInfo: ''
-    chaosServiceAccount: litmus-admin
+    chaosServiceAccount: scheduler
     monitoring: false
     jobCleanUpPolicy: <cleanup>
     experiments:
