@@ -17,22 +17,22 @@ POD_DELETE_INTERVAL ?= 10
 POD_DELETE_FORCE ?= false
 
 .PHONY: create/operator/litmus
-create/operator:
+create/operator/litmus:
 	@echo "create operator: litmus"
 	@kubectl apply -f ./litmus/serviceaccount.yaml
 	@kubectl apply -f ./litmus/litmus-operator-v1.8.2.yaml
-
-.PHONY: create/chaosexperiments
-create/chaosexperiments:
-	@echo "create chaosexperiment resources"
-	@kubectl apply -f ./chaosexperiments/chaosexperiments-generic.yaml
-	@kubectl apply -f ./chaosexperiments/chaosexperiments-kafka.yaml
 
 .PHONY: create/operator/chaosscheduler
 create/operator/chaosscheduler: 
 	@echo "create operator: litmus"
 	@kubectl apply -f ./chaosscheduler/serviceaccount.yaml
 	@kubectl apply -f ./chaosscheduler/chaosscheduler-operator-v1.9.0.yaml
+
+.PHONY: create/chaosexperiments
+create/chaosexperiments:
+	@echo "create chaosexperiment resources"
+	@kubectl apply -f ./chaosexperiments/chaosexperiments-generic.yaml
+	@kubectl apply -f ./chaosexperiments/chaosexperiments-kafka.yaml
 
 .PHONY: create/chaosschedule/pod-delete
 create/chaosschedule/pod-delete: 
