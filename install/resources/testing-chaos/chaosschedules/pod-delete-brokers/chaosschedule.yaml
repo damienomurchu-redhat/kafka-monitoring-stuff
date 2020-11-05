@@ -5,6 +5,7 @@ metadata:
   namespace: litmus
 spec:
   schedule:
+    now: 'true'
     repeat:
       properties:
          #format should be like "10m" or "2h" accordingly for minutes or hours
