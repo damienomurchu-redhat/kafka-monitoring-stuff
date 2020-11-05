@@ -6,7 +6,6 @@ ZOOKEEPER_DEPLOYMENT_TYPE ?= statefulset
 
 CHAOS_SCHEDULE_INCLUDED_DAYS ?= Mon,Tue,Wed,Thu,Fri
 CHAOS_SCHEDULE_INCLUDED_HOURS ?= 8-17
-CHAOS_SCHEDULE_MIN_INTERVAL ?= 3m
 CHAOS_SCHEDULE_STATE ?= active
 CHAOS_SCHEDULE_CLEANUP ?= delete
 
@@ -38,7 +37,6 @@ create/chaosexperiments:
 create/chaosschedule/pod-delete-brokers: 
 	@echo "create pod-delete chaosschedule"
 	@cat ./chaosschedules/pod-delete-brokers/chaosschedule.yaml | \
-    sed -e 's|<chaos-schedule-interval>|$(CHAOS_SCHEDULE_MIN_INTERVAL)|g' | \
     sed -e 's|<chaos-schedule-included-days>|$(CHAOS_SCHEDULE_INCLUDED_DAYS)|g' | \
     sed -e 's|<chaos-schedule-included-hours>|$(CHAOS_SCHEDULE_INCLUDED_HOURS)|g' | \
     sed -e 's|<chaos-schedule-state>|$(CHAOS_SCHEDULE_STATE)|g' | \
@@ -55,7 +53,6 @@ create/chaosschedule/pod-delete-brokers:
 create/chaosschedule/pod-delete-zookeepers: 
 	@echo "create pod-delete chaosschedule"
 	@cat ./chaosschedules/pod-delete-zookeepers/chaosschedule.yaml | \
-    sed -e 's|<chaos-schedule-interval>|$(CHAOS_SCHEDULE_MIN_INTERVAL)|g' | \
     sed -e 's|<chaos-schedule-included-days>|$(CHAOS_SCHEDULE_INCLUDED_DAYS)|g' | \
     sed -e 's|<chaos-schedule-included-hours>|$(CHAOS_SCHEDULE_INCLUDED_HOURS)|g' | \
     sed -e 's|<chaos-schedule-state>|$(CHAOS_SCHEDULE_STATE)|g' | \
