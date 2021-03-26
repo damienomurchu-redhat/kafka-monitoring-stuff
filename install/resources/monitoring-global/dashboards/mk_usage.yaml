@@ -30,7 +30,7 @@ spec:
             "gnetId": null,
             "graphTooltip": 0,
             "id": 13,
-            "iteration": 1615906110773,
+            "iteration": 1616690192672,
             "links": [],
             "panels": [
                 {
@@ -657,9 +657,9 @@ spec:
                 "pluginVersion": "7.1.1",
                 "targets": [
                     {
-                    "expr": "sum(count(count(cluster_version{type=\"completed\"}) by (version, cluster_id) * on (cluster_id) group_left () strimzi_resources{kind=~\"Kafka\"}) by (cluster_id))",
+                    "expr": "sum(count(strimzi_resources{kind=~\"Kafka\"}) by (cluster_id))",
                     "format": "time_series",
-                    "instant": false,
+                    "instant": true,
                     "interval": "",
                     "intervalFactor": 1,
                     "legendFormat": "",
@@ -731,11 +731,13 @@ spec:
                 "steppedLine": false,
                 "targets": [
                     {
-                    "expr": "sum(count(count(cluster_version{type=\"completed\"}) by (version, cluster_id) * on (cluster_id) group_left () strimzi_resources{kind=~\"Kafka\"}) by (cluster_id))",
+                    "expr": "sum(count(strimzi_resources{kind=~\"Kafka\"}) by (cluster_id))",
+                    "format": "time_series",
                     "hide": false,
+                    "instant": false,
                     "interval": "",
                     "legendFormat": "",
-                    "refId": "B"
+                    "refId": "A"
                     }
                 ],
                 "thresholds": [],
@@ -846,7 +848,7 @@ spec:
                         "properties": [
                         {
                             "id": "custom.width",
-                            "value": 290
+                            "value": 289
                         }
                         ]
                     },
@@ -878,12 +880,20 @@ spec:
                 "pluginVersion": "7.1.1",
                 "targets": [
                     {
-                    "expr": "count(cluster_version{type=\"completed\"}) by (version, cluster_id) * on (cluster_id) group_left () strimzi_resources{kind=~\"Kafka\"}",
+                    "expr": "strimzi_resources{kind=~\"Kafka\"}",
                     "format": "table",
                     "instant": true,
                     "interval": "",
                     "legendFormat": "",
                     "refId": "C"
+                    },
+                    {
+                    "expr": "count(cluster_version{type=\"completed\"}) by (version, cluster_id)",
+                    "format": "table",
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "",
+                    "refId": "A"
                     }
                 ],
                 "timeFrom": null,
@@ -891,15 +901,32 @@ spec:
                 "title": "Kakfa Instances Per Openshift Cluster",
                 "transformations": [
                     {
+                    "id": "merge",
+                    "options": {}
+                    },
+                    {
+                    "id": "filterFieldsByName",
+                    "options": {
+                        "include": {
+                        "names": [
+                            "cluster_id",
+                            "Value #C",
+                            "version"
+                        ]
+                        }
+                    }
+                    },
+                    {
                     "id": "organize",
                     "options": {
-                        "excludeByName": {
-                        "Time": true,
-                        "cluster_id": false
+                        "excludeByName": {},
+                        "indexByName": {
+                        "Value #C": 2,
+                        "cluster_id": 0,
+                        "version": 1
                         },
-                        "indexByName": {},
                         "renameByName": {
-                        "Value": "Kafka Instances",
+                        "Value #C": "Kafka Instances",
                         "cluster_id": "Cluster ID",
                         "version": "OSD Version"
                         }
@@ -971,7 +998,7 @@ spec:
                     {
                     "expr": "sum(strimzi_resources{kind=~\"Kafka\"})",
                     "format": "time_series",
-                    "instant": false,
+                    "instant": true,
                     "interval": "",
                     "legendFormat": "",
                     "refId": "C"
@@ -1133,5 +1160,5 @@ spec:
             "timezone": "",
             "title": "MK - Usage",
             "uid": "prHiT9yGk",
-            "version": 14
+            "version": 15
             }
