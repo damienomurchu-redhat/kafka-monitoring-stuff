@@ -24,8 +24,8 @@ NOTE: This SOP is explicitly targeting the `mas-sso` cluster within the staging 
 
 == Execute/Resolution
 === Accessing Keycloak
-1. Using the following URL, log into Keycloak via the `GitHub` IDP:
-`https://keycloak-redhat-rhoam-user-sso.apps.mas-sso-stage.1gzl.s1.devshift.org`
+1. Log into MAS SSO via the `GitHub` IDP using the url in the SOP doc in the https://docs.google.com/document/d/1TtO6wLd1lz0XjYqOBjP9kgYFbOIXZDFlM_eib4H2egw/edit#[RTS] getting started guide:
+
 
 === Realm Creation
 1. Hover your cursor over the top left corner drop-down menu in the Keycloak UI and click the `Add Realm` button
