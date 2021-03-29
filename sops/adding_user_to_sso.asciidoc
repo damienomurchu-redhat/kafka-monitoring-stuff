@@ -1,0 +1,60 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Creating users in MAS-SSO for Data Plane OSD cluster
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of creating users in MAS-SSO for Data Plane OSD cluster access. 
+
+
+== Prerequisites
+
+You will need access to the following:
+
+* mas_kafka_sre realm in MAS-SSO
+* OCM credentials to be the user of the the data plane cluster
+* Access to the URL doc in the https://docs.google.com/document/d/1TtO6wLd1lz0XjYqOBjP9kgYFbOIXZDFlM_eib4H2egw/edit#[RTS] getting started guide
+
+
+== Execute/Resolution
+=== Creating the user in SSO
+1. Login into MAS SSO using the credentials from the URL doc in the RTS getting started guide
+2. Navigate to the mas_kafka_sre realm and then to users in the side bar on the left.
+3. Create the new user by clicking on the add user button on the right hand side
+4. Give the user a user name and any other information you want to add. Make sure the user enabled slider is set to on.
+
+image::images/add_user.png[]
+[start=5]
+5. Once you click save you will be able to give the user credentials. This is done by clicking the credentials tab and either giving them a temporary password which the user changes when they first login or a permanent password that can't be changed.
+
+image::images/add_creds.png[]
+
+
+=== Giving the user permission in OSD data plane cluster
+1. To give the users permission you will need ocm permissions, user.json and ocm post command which can be gotten from the SOP document in the onboarding RTS doc
+
+== Validate
+
+1. Check that the users have been created using the ocm get command from the SOP doc.
+
+2. Make sure the users can login to the data plane cluster using the kafka_sre idp option
+
+[start=3]
+3. Ensure they have dedicated admin permissions in the cluster by checking the groups in the user managment tab of the cluster
+
+
+== Troubleshooting
+
+If people are unable to login ensure the username specified in sso is the same as the one your giving permissions to in user.json
