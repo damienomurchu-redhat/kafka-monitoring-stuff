@@ -37,7 +37,8 @@ You will need access to the following:
 
 image::images/add_user.png[]
 [start=5]
-5. Once you click save you will be able to give the user credentials. This is done by by clicking the credentials tab and either giving them a temporary password which the user changes when they first login or a permanent password that can't be changed.
+5. Once you click save you will be able to give the user credentials. This is done by clicking the credentials tab and either giving them a temporary password which the user changes when they first login or a permanent password that can't be changed.
+
 image::images/add_creds.png[]
 
 
