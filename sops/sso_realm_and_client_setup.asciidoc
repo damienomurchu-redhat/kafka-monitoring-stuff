@@ -40,8 +40,14 @@ image::images/keycloak_client_settings.png[]
 4. Specific roles are required by the newly created client. From the `Client` menu, select the newly created client, then `Service Account Roles` on the far right tabular headings
 5. Click on the `Client Roles` drop-down menu and search for `realm management`
 6. Select the `create-client` and `manage-clients` roles from `Available Roles` and add them as assigned roles, as displayed below:
-
 image::images/keycloak_client_roles.png[]
+
+
+=== Linking new Realm to the dataplane cluster
+1. Change the current realm set up for the data plane cluster and replace the current realm credentials. The relevant files and credential locations can be found in the URL & creds doc.
+
+Note: Once the realm and client have been created you can add users by following this https://github.com/RHCloudServices/kafka-monitoring-stuff/blob/master/sops/adding_user_to_sso.asciidoc[SOP]
+
 == Validate
 == Troubleshooting
 1. The error below will be displayed if an attempt is made to log in to the User-SSO Keycloak route without clearing the browser cookies for the cluster
@@ -52,3 +58,4 @@ image::images/keycloak_client_roles.png[]
 ----
 +
 To fix this issue, log out of the cluster and remove all cookies associated with the cluster from your browser (https://support.google.com/chrome/answer/95647?co=GENIE.Platform%3DDesktop&hl=en-GB#zippy=%2Cdelete-cookies-from-a-site)[Clear Cookies in Google Chrome]). Once complete, attempt to log in to the User-SSO Keycloak route again.
+
