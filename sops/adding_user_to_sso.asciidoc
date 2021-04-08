@@ -24,7 +24,7 @@ The purpose of this SOP is to describe the process of creating users in MAS-SSO 
 You will need access to the following:
 
 * mas_kafka_sre realm in MAS-SSO
-* OCM credentials to be the user of the the data plane cluster
+* OCM credentials to be the user of the data plane cluster
 * Access to the URL doc in the https://docs.google.com/document/d/1TtO6wLd1lz0XjYqOBjP9kgYFbOIXZDFlM_eib4H2egw/edit#[RTS] getting started guide
 
 
@@ -32,7 +32,7 @@ You will need access to the following:
 === Creating the user in SSO
 1. Login into MAS SSO using the credentials from the URL doc in the RTS getting started guide
 2. Navigate to the mas_kafka_sre realm and then to users in the side bar on the left.
-3. Create the new user by clicking on the add user button on the right hand side
+3. Create the new user by clicking on the add user button on the right-hand side
 4. Give the user a user name and any other information you want to add. Make sure the user enabled slider is set to on.
 
 image::images/add_user.png[]
@@ -43,16 +43,16 @@ image::images/add_creds.png[]
 
 
 === Giving the user permission in OSD data plane cluster
-1. To give the users permission you will need ocm permissions, user.json and ocm post command which can be gotten from the SOP document in the onboarding RTS doc
+1. To give the users permission you will need ocm permissions, user.json and ocm post command which can be gotten from the SOP document in the on-boarding RTS doc
 
 == Validate
 
 1. Check that the users have been created using the ocm get command from the SOP doc.
 
-2. Make sure the users can login to the data plane cluster using the kafka_sre idp option
+2. Make sure the users can log in to the data plane cluster using the kafka_sre idp option
 
 [start=3]
-3. Ensure they have dedicated admin permissions in the cluster by checking the groups in the user managment tab of the cluster
+3. Ensure they have dedicated admin permissions in the cluster by checking the groups in the user management tab of the cluster
 
 
 == Troubleshooting
