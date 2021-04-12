@@ -29,7 +29,8 @@ This SOP describes how to update credentials and configuration for the Observato
 1. Create a merge request with updated values for the relevant parameters in https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml#L485-492
 Known paramaters are DEX_URL, DEX_USERNAME, OBSERVATORIUM_GATEWAY & OBSERVATORIUM_TENANT.
 2. Update secret vaules in vault if needed https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials Relevant secrets include `dex.secret`, `dex.password` and `observatorium.token`
-3. Get the merge request reviewed & merged
+3. Update the version in https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/namespaces/managed-services-production.yml#L40 to match the vault secret version an dcreate a new merge request.
+4. Get the merge requests reviewed & merged
 
 == Validate
 
