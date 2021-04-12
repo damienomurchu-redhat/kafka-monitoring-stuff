@@ -1,0 +1,41 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Configure Observatorium credentials in the Control Plane
+
+toc::[]
+
+== Description
+
+This SOP describes how to update credentials and configuration for the Observatorium instance the Control Plane (and indirectly, the Data Plane) should use.
+
+== Prerequisites
+
+1. Access to the vault secret where Observatoriums credentials are stored https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials
+2. Ability to create merge requests against https://gitlab.cee.redhat.com/service/app-interface
+
+== Execute/Resolution
+
+
+1. Create a merge request with updated values for the relevant parameters in https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml#L485-492
+Known paramaters are DEX_URL, DEX_USERNAME, OBSERVATORIUM_GATEWAY & OBSERVATORIUM_TENANT.
+2. Update secret vaules in vault if needed https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials Relevant secrets include `dex.secret`, `dex.password` and `observatorium.token`
+3. Get the merge request reviewed & merged
+
+== Validate
+
+1. Verify the values in the control plance are correct by comparing to the secrets in the control plane cluster. TODO
+2. Verify data is being sent to Observatorium. TODO
+
+== Troubleshooting
+
+TODO
