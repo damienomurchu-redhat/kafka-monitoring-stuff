@@ -1,0 +1,76 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+= AWS CLI Configuration and CloudWatch Log Commands
+
+toc::[]
+
+== Description
+This SOP contains three distinct sections:
+
+- The steps for creating access and secret keys to use with the AWS CLI
+- A guide on how to use the AWS console UI to view, search and filter CloudWatch logs
+- A guide on how to use the AWS CLI to view, search and filter CloudWatch logs
+
+Using either the AWS console UI or the CLI to view, search and filter CloudWatch logs is down to user preference.
+
+If using the UI please refer to the <<UI, Using the CloudWatch UI>> section.
+
+If using the CLI refer to the <<Configure, Creating and Configuring CLI Credentials>> and <<CLI, Using the AWS CLI>> sections.
+
+== Prerequisites
+1. Access to the AWS console in which the OSD cluster resides (if using the UI to view CloudWatch logs)
+2. The https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html[AWS CLI] installed (version 2) on your local machine (If using the CLI to view CloudWatch logs)
+
+[#Configure]
+== Creating and Configuring CLI Credentials
+1. Follow https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds[this] guide to create new a new access and secret key pair
+2. Follow https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-config[this] guide to configure the AWS CLI using the newly created credentials
+
+[#UI]
+== Using the CloudWatch UI
+=== Viewing Logs
+1. Log in to the AWS console using the credentials supplied when your user was created and navigate to the CloudWatch service (make sure you're in the correct region), then from the menu on the left-hand side click `Log Groups`
+2. You will be presented with a list of available logs, each named in the following format: `<cluster_id>-<log_type>`.
++
+The log type will either be `application`, for user-created namespaces, or `infrastructure`, for `openshift` defined namespaces. Kafka logs are of type `application`. You can view any of the logs files by clicking on the file, which will display a list of log events.
+
+=== Searching and Filtering Logs
+1. Logs can be searched and filtered in the console UI using the `Filter events` text box, usage information on which can be found https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SearchDataFilterPattern.html[here]
+
+[#CLI]
+== Using the AWS CLI
+=== Viewing Logs
+1. The below command will retrieve the details on all log-groups, with the name of the log-group in the `logGroupName` response field:
++
+----
+aws logs describe-log-groups
+----
+2. To command below will list all the available log streams for a specific log group name. The `logStreamName` field contains the name of the log stream:
++
+----
+aws logs describe-log-streams --log-group-name <log_group_name> --no-paginate
+----
+3. To list all the events in a specific log group, replace `<log_group_name>` and `<log_stream_name>` with in the below command:
++
+----
+aws logs get-log-events --log-group-name <log_group_name> --log-stream-name <log_stream_name>
+----
+
+=== Searching and Filtering Logs
+1. Logs can be searched and filtered by using the `--filter-pattern` CLI parameter, usage information on which can be found https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SearchDataFilterPattern.html[here]
+
+== Validate
+
+== Troubleshooting
+1. AWS CLI command execution error
++
+If executing CLI commands returns an error or a command fails to execute, ensure the credentials and CLI are correctly configured
