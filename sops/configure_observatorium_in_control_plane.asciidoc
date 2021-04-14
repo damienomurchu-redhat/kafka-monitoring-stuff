@@ -25,16 +25,24 @@ This SOP describes how to update credentials and configuration for the Observato
 
 == Execute/Resolution
 
+=== Update observability config
+
+1. Create a PR with your changes against the `main` branch of https://github.com/bf2fc6cc711aee1a0c2a/observability-resources-mk
+2. When merged, rebase the `prod` branch on `main`. Make sure that the Observatorium config on the `prod` branch is *not* updated.
+3. Create a tag named `v1.x.y-staging` from `main`. Replace `x` and `y` with the actual minor and patch versions.
+4. Create a tag named `v1.x.y-prod` from `prod`. Replace `x` and `y` with the actual minor and patch versions.
+
+=== Update service provision templates
 
 1. Create a merge request with updated values for the relevant parameters in https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml#L485-492
-Known paramaters are DEX_URL, DEX_USERNAME, OBSERVATORIUM_GATEWAY & OBSERVATORIUM_TENANT.
-2. Update secret vaules in vault if needed https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials Relevant secrets include `dex.secret`, `dex.password` and `observatorium.token`
-3. Update the version in https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/namespaces/managed-services-production.yml#L40 to match the vault secret version an dcreate a new merge request.
-4. Get the merge requests reviewed & merged
+Known paramaters are DEX_URL, DEX_USERNAME, OBSERVATORIUM_GATEWAY, OBSERVATORIUM_TENANT & OBSERVABILITY_CONFIG_TAG. Make sure that `OBSERVABILITY_CONFIG_TAG` matches the tags created in the previous steps.
+3. Update secret values in vault if needed https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials Relevant secrets include `dex.secret`, `dex.password` and `observatorium.token`
+4. Update the version in https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/namespaces/managed-services-production.yml#L40 to match the vault secret version and create a new merge request.
+5. Get the merge requests reviewed & merged
 
 == Validate
 
-1. Verify the values in the control plance are correct by comparing to the secrets in the control plane cluster. TODO
+1. Verify the values in the control plane are correct by comparing to the secrets in the control plane cluster. TODO
 2. Verify data is being sent to Observatorium. TODO
 
 == Troubleshooting
