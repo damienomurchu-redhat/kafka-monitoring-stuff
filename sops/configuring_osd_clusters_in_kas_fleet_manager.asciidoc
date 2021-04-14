@@ -1,0 +1,88 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Configure OSD Clusters in Kafka Service Fleet Manager
+
+toc::[]
+
+== Description
+
+This SOP outlines the process of configuring data plane OSD clusters within kas-fleet-manager which includes adding/removing OSD clusters and marking a cluster as unschedulable.
+
+== Prerequisites
+* https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials[Production AWS account ID and osdCcsAdmin credentials]
+** aws.accountid
+** aws.accesskey
+** aws.secretaccesskey
+* https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials[OCM credentials to a user in the production organisation]
+** ocm-service.clientId
+** ocm-service.clientSecret
+* https://stedolan.github.io/jq/download/[jq] installed
+
+== Create the OSD cluster
+1. Set the configuration
++
+[source,sh]
+----
+export AWS_ACCOUNT_ID=<REPLACE_ME>
+export AWS_ACCESS_KEY_ID=<REPLACE_ME>
+export AWS_SECRET_ACCESS_KEY=<REPLACE_ME>
+export NUM_COMPUTE_NODES=60
+----
+2. Login as the production service account
++
+[source,sh]
+----
+ocm login --url=https://api.openshift.com --client-id=<client-id> --client-secret=<client-secret>
+----
+3. Create the OSD cluster
++
+[source,sh]
+----
+cat << EOF | ocm post /api/clusters_mgmt/v1/clusters | jq ' .name, .id, .multi_az, .cloud_provider.id, .region.id '
+{"name":"mk-$(date +'%m%d-%H%M%S')","region":{"id":"us-east-1"},"nodes":{"compute_machine_type":{"id":"m5.4xlarge"},"compute":$NUM_COMPUTE_NODES},"managed":true,"cloud_provider":{"id":"aws"},"multi_az":true,"node_drain_grace_period":{"value":60,"unit":"minutes"},"product":{"id":"osd"},"ccs":{"enabled":true,"disable_scp_checks":false},"aws":{"access_key_id":"$AWS_ACCESS_KEY_ID","account_id":"$AWS_ACCOUNT_ID","secret_access_key":"$AWS_SECRET_ACCESS_KEY"}}
+EOF
+----
+
+== Add the OSD cluster to the kas-fleet-manager production configuration
+1. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] with the OSD cluster details
+** https://gitlab.cee.redhat.com/service/app-interface/-/merge_requests/17711[Example MR as reference]
++
+[source,yaml]
+----
+CLUSTER_LIST:
+  - name: cluster-name
+    cluster_id: 1jp6kdr7k0sjbe5adck2prjur8f39378
+    cloud_provider: aws
+    region: us-east-1
+    multi_az: true
+    schedulable: true # change this to false if you do not want the cluster to be schedulable
+    kafka_instance_limit: 150 # change this to match any value of configuration
+----
+2. Ping the control plane team in the "MK - Control Plane" gchat room to get the MR reviewed and merged
+
+== Marking an OSD cluster as unschedulable 
+Unschedulable will stop any new Kafka instances being provisioned on this OSD cluster.
+
+1. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and change the `schedulable` field to false for the correct OSD cluster
+
+== Setting the maximum number of Kafkas per OSD cluster
+1. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and change the `kafka_instance_limit` field to the number of Kafkas you would like the maximum to be for the correct OSD cluster
+
+== Removing an OSD cluster from production
+1. Verify all Kafka instances on the OSD cluster have been fully removed
+2. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and remove the entry for the correct OSD cluster
+3. Wait 60 seconds and verify the OSD cluster is deleting through the OCM CLI or UI
+
+
+== Troubleshooting
+None.
