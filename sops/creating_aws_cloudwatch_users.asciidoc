@@ -1,0 +1,65 @@
+
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+= Creating an AWS IAM CloudWatch User
+
+toc::[]
+
+== Description
+This SOP outlines the process of creating the required group and policies to provide read-only access to CloudWatch logs and a new user within the group.
+
+Once the steps in this SOP have been completed, the newly created user will have access to the AWS console and manage their security credentials, which includes creating an access key for CLI access.
+
+== Prerequisites
+1. AWS CLI admin access, or an alternative account with sufficient permissions, to the account in which the CloudWatch logs reside (admin credentials for each AWS account should be available in https://vault.devshift.net/ui[Vault])
+2. The Kerberos ID, email address, and the team of the user requesting access. This information should have been supplied in the Jira used for requesting an account.
+
+== Execute/Resolution
+1. Configure the AWS CLI to point to the correct AWS account
+2. Executing the `mk_evals_cloudwatch_iam_policy.json` script will create a group, policy, and user. The script accepts (and expects) four arguments:
++
+|===
+|Argument | Use
+
+|Username
+|Username of the newly created user. This should be the user's Kerberos ID. The resulting username will take the form of `mk_<kerberos_id>_evals`
+
+|Password
+|Password for initial login, which the user will be required to change. This password should be the Vault https://vault.devshift.net/ui/vault/secrets/managed-services/show/rts/aws_iam_cloudwatch_readonly_user[rts/aws_iam_cloudwatch_readonly_user] password.
+
+|Email Address
+|The email address of the user the account is being created for. A tag is created containing the user's email address.
+
+|Team
+|The name of the team the user is from (running-the-service, kafka-instances). A tag is created containing the user's team.
+|===
++
+2. Execute the script passing in the above arguments (from the projects root folder):
++
+----
+./scripts/create_aws_iam_user.sh <username> <password> <email_address> <team>
+----
++
+3. The script will print out the `Sign in URL` and `Username` to the console once complete
+
+== Validate
+1. Validating the user was successfully created
++
+Ensure that the script prints `Successful Execution!` to the console and there are no errors during execution.
++
+You can use the following CLI command to retrieve the newly created user:
++
+----
+aws iam get-user --user-name <username>
+----
+
+== Troubleshooting
