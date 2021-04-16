@@ -51,19 +51,19 @@ export NAMESPACE=my-project
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 2 --partitions 2 --topic ${TOPIC_NAME}
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --create --replication-factor 2 --partitions 2 --topic ${TOPIC_NAME}
 ----
 4. Produce a single message using the command below (substituting out the pod name `${KAFKA_CLUSTER}-kafka-0` pod name if required). The command line will prompt you to input a message.
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -- env - bin/kafka-console-producer.sh --broker-list localhost:9092 --topic ${TOPIC_NAME}
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -- env - bin/kafka-console-producer.sh --broker-list localhost:9096 --topic ${TOPIC_NAME}
 ----
 5. Modify the log file on the leader on one of the partitions. The below command will list the leader of each partition:
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env bin/./kafka-topics.sh --describe --topic ${TOPIC_NAME} --bootstrap-server localhost:9092
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env bin/./kafka-topics.sh --describe --topic ${TOPIC_NAME} --bootstrap-server localhost:9096
 ----
 6. Change a single byte in the binary log file for the partition obtained from the previous command, which should be run on one of the broker pods. You may have to change the `kafka-log0` section of the command to `kafka-log1` if you are using broker one etc.
 +
@@ -76,7 +76,7 @@ cd /var/lib/kafka/data-0/kafka-log0/my-topic
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env bin/./kafka-console-consumer.sh --topic ${TOPIC_NAME} --from-beginning --bootstrap-server localhost:9092
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env bin/./kafka-console-consumer.sh --topic ${TOPIC_NAME} --from-beginning --bootstrap-server localhost:9096
 ----
 9. Attempting to read from the topic should result in the below exception:
 +
@@ -109,21 +109,21 @@ Processed a total of 0 messages
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -- env - bin/kafka-console-producer.sh --broker-list localhost:9092 --topic ${TOPIC_NAME}
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -- env - bin/kafka-console-producer.sh --broker-list localhost:9096 --topic ${TOPIC_NAME}
 ----
 11. Attempt to read the second message. This should work as it effectively skips over reading the first corrupt message by setting the offset value to `1`:
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env bin/./kafka-console-consumer.sh --topic ${TOPIC_NAME} --offset 1 --partition 0  --bootstrap-server localhost:9092
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env bin/./kafka-console-consumer.sh --topic ${TOPIC_NAME} --offset 1 --partition 0  --bootstrap-server localhost:9096
 ----
 12. Test the above using a consumer group if required. Once a consumer group has been created, the commands below will reset the offset for the consumer group and not just a single consumer. More information on this can be found https://kafka.apache.org/documentation/#basic_ops_consumer_group[here]
 +
 [source,sh]
 ----
 // Shifts the offset by 1
-./kafka-consumer-groups.sh --reset-offsets --shift-by 1 --bootstrap-server localhost:9092 --group my-group --topic ${TOPIC_NAME} --execute
+./kafka-consumer-groups.sh --reset-offsets --shift-by 1 --bootstrap-server localhost:9096 --group my-group --topic ${TOPIC_NAME} --execute
 
 //  Shifts the offset to a specified value
-./kafka-consumer-groups.sh --reset-offsets --to-offset 1 --bootstrap-server localhost:9092 --group my-group --topic ${TOPIC_NAME} --execute
+./kafka-consumer-groups.sh --reset-offsets --to-offset 1 --bootstrap-server localhost:9096 --group my-group --topic ${TOPIC_NAME} --execute
 ----
