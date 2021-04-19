@@ -25,6 +25,7 @@ Once the steps in this SOP have been completed, the newly created user will have
 
 == Execute/Resolution
 1. Configure the AWS CLI to point to the correct AWS account in your AWS CLI config file. You can https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html[export named AWS profiles] using an ENV VAR which makes switching between AWS profiles easier:
++
 ----
 // Staging example
 export AWS_PROFILE=staging_account
@@ -32,7 +33,6 @@ export AWS_PROFILE=staging_account
 // Production example
 export AWS_PROFILE=production_account
 ----
-+
 2. Executing the `mk_evals_cloudwatch_iam_policy.json` script will create a group, policy, and user. The script accepts (and expects) four arguments:
 +
 |===
