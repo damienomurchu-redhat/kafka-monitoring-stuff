@@ -46,7 +46,7 @@ KAFKA_CLUSTER=my-kafka-cluster
 2. If the metric count is positive, then partitions are under-replicated. You can check for under-replicated partitions using the command below:
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --under-replicated-partitions
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe --under-replicated-partitions
 
 // Example output
 Topic: testTopic	Partition: 0	Leader: 1	Replicas: 1,0,2	Isr: 1,0
@@ -72,7 +72,7 @@ During topic creation time, the leader election algorithm of Kafka will take car
 * The following command can be used to check for an unavailable partition leader:
 [source,sh]
 ----
- oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --unavailable-partitions
+ oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe --unavailable-partitions
 ----
 * Do a rolling restart, or if a few brokers are holding the leaders of other brokers restart them if there is no customer impact, and then verify that the leadership is balanced
 * The following tools can be used to reassign a leader:
@@ -83,6 +83,6 @@ During topic creation time, the leader election algorithm of Kafka will take car
 - Check for under replicated partitions:
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --under-replicated-partitions
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe --under-replicated-partitions
 ----
 - Open the Grafana route in a browser and check the Under Replicated Partitions metric count on the `Strimzi Kafka` dashboard

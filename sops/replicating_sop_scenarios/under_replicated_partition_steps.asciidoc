@@ -41,21 +41,21 @@ TOPIC_NAME=my-example-topic
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 3 --partitions 3 --topic ${TOPIC_NAME}
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --create --replication-factor 3 --partitions 3 --topic ${TOPIC_NAME}
 ----
 
 2. produce messages to kafka topic  
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- bin/kafka-producer-perf-test.sh --producer-props bootstrap.servers=localhost:9092 --record-size=100 --throughput 1 --num-records 10 --topic ${TOPIC_NAME}
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- bin/kafka-producer-perf-test.sh --producer-props bootstrap.servers=localhost:9096 --record-size=100 --throughput 1 --num-records 10 --topic ${TOPIC_NAME}
 ----
 
 3. Check under-replicated partitions
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --under-replicated-partitions
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe --under-replicated-partitions
 ----
  
 4. continue to force kafka broker pod termination   
@@ -69,7 +69,7 @@ watch -n 1 oc delete pod ${KAFKA_CLUSTER}-kafka-2 --grace-period=0 --force
 +
 [source,sh]
 ----
-oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --under-replicated-partitions 
+oc exec -it ${KAFKA_CLUSTER}-kafka-0 -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe --under-replicated-partitions 
 
 // Example output
 Topic: testTopic	Partition: 0	Leader: 1	Replicas: 1,0,2	Isr: 1,0

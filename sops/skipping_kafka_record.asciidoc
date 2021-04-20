@@ -49,7 +49,7 @@ partition_value=0
 The group name is required to be stored in an EV for use in the resolution steps. The below command will list all consumer groups and associated topics:
 +
 ----
-oc exec -it $pod_name -c kafka -- env - bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups
+oc exec -it $pod_name -c kafka -- env - bin/kafka-consumer-groups.sh --bootstrap-server localhost:9096 --describe --all-groups
 
 GROUP      TOPIC      PARTITION   CURRENT-OFFSET   LOG-END-OFFSET   LAG
 my-group   my-topic   0           0                9                9
@@ -80,7 +80,7 @@ oc project <kafka_cluster_namespace>
 2. Verify the existence of the problem. This will allow us to validate the fix once the SOP's steps have been completed. Running the command below should result in an exception:
 +
 ----
-oc exec -it $pod_name -c kafka -- env bin/./kafka-console-consumer.sh --topic $topic_name --offset $offset_value --max-messages 1 --partition $partition_value --bootstrap-server localhost:9092
+oc exec -it $pod_name -c kafka -- env bin/./kafka-console-consumer.sh --topic $topic_name --offset $offset_value --max-messages 1 --partition $partition_value --bootstrap-server localhost:9096
 ----
 +
 3. Skipping a record requires using the `kafka-consumer-groups.sh` script, which is available on each of the Kafka pods. The script can be used to reset the consumer group offset to a specified offset or timestamp. Usage documentation can be found https://kafka.apache.org/documentation/#basic_ops_consumer_group[here].
@@ -111,7 +111,7 @@ There are also a number of execution options:
 Resetting an offset to a specified offset can be achieved using the `--to-offset` option. As the exception displayed record `10` as being in a corrupt state, the following command sets the offset to '11`, skipping the corrupted record:
 +
 ----
-oc exec -it $pod_name -c kafka -- env bin/ ./kafka-consumer-groups.sh --reset-offsets --to-offset 11 --bootstrap-server localhost:9092 --group <group_name> --topic $topic_name --execute
+oc exec -it $pod_name -c kafka -- env bin/ ./kafka-consumer-groups.sh --reset-offsets --to-offset 11 --bootstrap-server localhost:9096 --group <group_name> --topic $topic_name --execute
 ----
 
 == Validate
@@ -123,7 +123,7 @@ As the corrupted record/s have been skipped, specifying the `<new_offset_value>`
 Run the below command to verify that records can be consumed from the new offset without error:
 +
 ----
-oc exec -it $pod_name -c kafka -- env bin/./kafka-console-consumer.sh --topic $topic_name --offset <new_offset_value> --max-messages 1 --partition $partition_value --bootstrap-server localhost:9092
+oc exec -it $pod_name -c kafka -- env bin/./kafka-console-consumer.sh --topic $topic_name --offset <new_offset_value> --max-messages 1 --partition $partition_value --bootstrap-server localhost:9096
 ----
 
 == Troubleshooting
