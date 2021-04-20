@@ -1,0 +1,38 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Hard kill control plane services
+
+toc::[]
+
+== Description
+This SOP outlines how to turn off the control plane services for Managed Kafka.
+
+== Prerequisites
+1. You have the `/teams/managed-services/roles/dev.yml` and `/teams/managed-services/roles/mas-sso-dev.yml` roles added to your user in https://gitlab.cee.redhat.com/service/app-interface/-/tree/master/data/teams/managed-services/users[app-interface]. This is required to access the kas-fleet-manager and mas-sso dashboards and namespaces.
+** For example: https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/teams/managed-services/users/akoserwa.yml[akoserwa.yml].
+2. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+
+== Execute/Resolution
+1. Search for `/services/managed-services/namespaces/managed-services-production.yml` https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and set the `REPLICAS` property to 0 under this namespaces parameters.
+2. Search for `/services/mas-sso/namespaces/mas-sso-production.yml` in the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/mas-sso/cicd/saas/saas-mas-sso.yaml[mas-sso saas file] and set the `CR_INSTANCES` property to 0 under this namespaces parameters.
+3. Open an MR and contact one of the approvers listed by the @devtools-bot.
+4. Follow the `ui-service-down` SOP to update the UI to show the service down page.
+5. Contact the Incident Commanders, as per https://docs.google.com/document/d/1MyWj_V5QCFVHDjedo2OMeikslcMrf74nBC-kIATOh84/edit#, asking for the Status Page to be updated to say the Service is no longer available.
+
+== Validate
+1. Validate no MAS-SSO pods are running in its https://console-openshift-console.apps.app-sre-prod-04.i5h0.p1.openshiftapps.com/k8s/cluster/projects/mas-sso-production[production namespace] 
+2. Validate no kas-fleet-manager pods are running in its https://console-openshift-console.apps.app-sre-prod-04.i5h0.p1.openshiftapps.com/k8s/cluster/projects/managed-services-production[production namespace] 
+3. Validate the https://cloud.redhat.com/beta/application-services/streams/kafkas/[RHOISAK UI] is returning an error
+
+== Troubleshooting
+None

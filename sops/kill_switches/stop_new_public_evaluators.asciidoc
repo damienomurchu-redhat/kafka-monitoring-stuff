@@ -1,0 +1,32 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Stop new public evaluators
+
+toc::[]
+
+== Description
+This SOP outlines how to stop public evaluators creating new Kafka instances
+
+== Prerequisites
+1. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+
+== Execute/Resolution
+1. Update the `ALLOW_ANY_REGISTERED_USERS` property to `false` under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file].
+2. Open an MR and contact one of the approvers listed by the @devtools-bot.
+
+== Validate
+1. Create a new customer portal user from the https://www.redhat.com/wapps/ugc/protected/usermgt/userList.html[user management UI].
+2. Validate you cannot create a new Kafka instance from our https://cloud.redhat.com/beta/application-services/streams/kafkas/[UI].
+
+== Troubleshooting
+None

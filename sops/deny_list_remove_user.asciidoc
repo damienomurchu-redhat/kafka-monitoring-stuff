@@ -1,0 +1,32 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Add a user to the deny list
+
+toc::[]
+
+== Description
+This SOP outlines how to remove a username from the deny list which will allow them to create Kafka instances.
+
+== Prerequisites
+1. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+2. Already have the Red Hat customer portal username.
+
+== Execute/Resolution
+1. Remove the username from the `DENIED_USERS` property under under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file].
+2. Open an MR and contact one of the approvers listed by the @devtools-bot.
+
+== Validate
+None
+
+== Troubleshooting
+None

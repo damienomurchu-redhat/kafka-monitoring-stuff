@@ -1,0 +1,34 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Soft kill all OSD clusters
+
+toc::[]
+
+== Description
+This SOP outlines how to soft kill all data plane OSD clusters, the existing Kafka instances will remain active until they expire.
+
+== Prerequisites
+1. You have the `/teams/managed-services/roles/dev.yml` role added to your user in https://gitlab.cee.redhat.com/service/app-interface/-/tree/master/data/teams/managed-services/users[app-interface]. This is required to access the kas-fleet-manager dashboards and namespace.
+** For example: https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/teams/managed-services/users/dffrench.yml[dffrench.yml]
+2. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+
+== Execute/Resolution
+1. Update the `KAFKA_CAPACITY_MAX_CAPACITY` property to `0` under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file].
+2. Open an MR and contact one of the approvers listed by the @devtools-bot.
+3. Contact the Incident Commanders, as per https://docs.google.com/document/d/1MyWj_V5QCFVHDjedo2OMeikslcMrf74nBC-kIATOh84/edit#, asking for the Status Page to be updated to say the Service is no longer available
+
+== Validate
+1. Validate that you are unable to create a new Kafka instance through the https://cloud.redhat.com/beta/application-services/streams/kafkas/[UI]
+
+== Troubleshooting
+None
