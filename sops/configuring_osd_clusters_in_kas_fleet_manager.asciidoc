@@ -83,6 +83,23 @@ Unschedulable will stop any new Kafka instances being provisioned on this OSD cl
 2. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and remove the entry for the correct OSD cluster
 3. Wait 60 seconds and verify the OSD cluster is deleting through the OCM CLI or UI
 
+== Creating a read-only group
+NOTE: This section requires a user with cluster-admin permissions to complete. Please ask one of the RTS team members to complete this step.
+
+1. A new group with a read-only cluster role is required to facilitate users requesting access to the cluster. Users are added to this group using https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/configuring_osd_clusters_in_kas_fleet_manager.asciidoc[this] SOP.
++
+Log in to the cluster using the API token and run the following command.
++
+[source,sh]
+----
+oc adm groups new mk-readonly-access
+----
++
+2. Add the `dedicated-readers` cluster role to the group. This role allows only `get`, `list`, and `watch` permissions on resources, with users also unable to view secrets.
++
+----
+oc adm policy add-cluster-role-to-group dedicated-readers mk-readonly-access
+----
 
 == Troubleshooting
 None.

@@ -1,0 +1,39 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+= Providing Users with Read-Only Access to OSD Clusters
+
+toc::[]
+
+== Description
+This SOP outlines the process of adding users to the existing `mk-readonly-access` read group on an OSD cluster. The user will have access to the cluster via the UI, and the `oc` command line tool.
+
+== Prerequisites
+1. Access to the OSD cluster. The OSD cluster must have the `Kafka_SRE` IDP setup, and your user must be part of the `cluster-admins` group.
+2. The `mk_readonly_access` group should exist on the cluster. The group is created as part of https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/[this] SOP.
+3. The user requesting access should be part of the `RHOAS-KAFKA-SRE` SSO realm. The SOP to add a user to the realm can be found https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/adding_user_to_sso.asciidoc[here].
+
+== Execute/Resolution
+1. Log in to the cluster using the `Kafka_SRE` IDP, and log in via a CLI using the API token.
+2. Add the required users to the `mk-readonly-access` group. The username of the user being added should match the username in the `RHOAS-KAFKA-SRE` SSO instance. You can add a single user or multiple users using the below command:
++
+----
+oc adm groups add-users mk-readonly-access <user1> <user2>
+----
+
+== Validate
+1. Confirm that the user can successfully log in to the cluster, and has view access to projects and resources. The below command should return a list of all projects on the cluster:
++
+----
+oc get projects
+----
+
+== Troubleshooting

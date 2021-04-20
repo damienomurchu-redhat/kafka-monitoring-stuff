@@ -40,8 +40,8 @@ image::images/keycloak_client_settings.png[]
 4. Specific roles are required by the newly created client. From the `Client` menu, select the newly created client, then `Service Account Roles` on the far right tabular headings
 5. Click on the `Client Roles` drop-down menu and search for `realm management`
 6. Select the `create-client` and `manage-clients` roles from `Available Roles` and add them as assigned roles, as displayed below:
++
 image::images/keycloak_client_roles.png[]
-
 
 === Linking new Realm to the dataplane cluster
 1. Change the current realm set up for the data plane cluster and replace the current realm credentials. The relevant files and credential locations can be found in the URL & creds doc.
