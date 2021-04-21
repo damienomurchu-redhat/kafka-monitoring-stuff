@@ -1,0 +1,16 @@
+cluster-admins:
+    - agullon
+    - damurphy
+    - davmarti
+    - mmikhail
+    - rlawton
+    - robrien
+    - rshelly
+    - stobin
+    - tdavidso
+    
+read-only:
+    - dffrench
+    - weil
+    - pbraun
+    - ppaszki
