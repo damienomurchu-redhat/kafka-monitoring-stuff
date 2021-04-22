@@ -31,9 +31,14 @@ The `application` suffix means they are application logs (for thing running on O
 If `infrastructure` logs are enabled, there will also be other Log Groups with an `infrastructure` suffix.
 They can be ignored unless you are debugging some OpenShift issue.
 
+image::images/log_groups.png[]
+
 If you want to search logs across multipe OSD clusters at the same time, you can do this from the Logs > Insights menu.
 The dropdown on this page allows you to select multiple Log Groups (so application logs from multiple OSD clusters).
 To search logs, you use the https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html[CloudWatch Logs Insights Query Syntax].
+
+
+image::images/insights_log_groups.png[]
 
 == Choosing a time range with Insights
 
@@ -41,6 +46,8 @@ By default, the time range will be set to some relative value e.g. last 1 hour.
 You can change this relative value to suit, or choose an absolute time range using the Custom option.
 Take care with timezones when viewing logs.
 There is a @@timestamp field, e.g. `2021-04-22T11:23:59.049032+00:00`, an @ingestionTime e.g. `1619090644272`, and depending on the container a timestamp prefix in the message field e.g. `2021-04-22 11:23:59`
+
+image::images/logs_time_range.png[]
 
 == Example queries
 
