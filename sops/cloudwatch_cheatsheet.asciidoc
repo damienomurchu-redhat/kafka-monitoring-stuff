@@ -1,0 +1,144 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= CloudWatch CheatSheet
+
+toc::[]
+
+== Description
+
+The purpose of this document is to give example of how to use CloudWatch Insights to query Managed Kafka logs across the Data Plane.
+These examples are all based on using the CloudWatch Logs UI via the AWS Coonsole.
+
+== Prerequisites
+
+* Access to AWS CloudWatch for the relevant environment (i.e. Stage or Production)
+
+== Choosing the right LogGroups (i.e what clusters am I searching?)
+
+If you only want to search logs for a specific OSD cluster, you can do this from the Logs > Log Groups menu.
+Choose the right cluster from the dropdown e.g. `mk-0413-093022-l7chh.application`.
+The `application` suffix means they are application logs (for thing running on OSD, like kafka).
+If `infrastructure` logs are enabled, there will also be other Log Groups with an `infrastructure` suffix.
+They can be ignored unless you are debugging some OpenShift issue.
+
+If you want to search logs across multipe OSD clusters at the same time, you can do this from the Logs > Insights menu.
+The dropdown on this page allows you to select multiple Log Groups (so application logs from multiple OSD clusters).
+To search logs, you use the https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html[CloudWatch Logs Insights Query Syntax].
+
+== Choosing a time range with Insights
+
+By default, the time range will be set to some relative value e.g. last 1 hour.
+You can change this relative value to suit, or choose an absolute time range using the Custom option.
+Take care with timezones when viewing logs.
+There is a @@timestamp field, e.g. `2021-04-22T11:23:59.049032+00:00`, an @ingestionTime e.g. `1619090644272`, and depending on the container a timestamp prefix in the message field e.g. `2021-04-22 11:23:59`
+
+== Example queries
+
+=== Strimi Operator logs
+
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.namespace_name = "redhat-managed-kafka-operator"
+| filter kubernetes.pod_name like /strimzi-cluster-operator/
+....
+
+=== KAS Fleetshard Operator Logs
+
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.namespace_name = "redhat-kas-fleetshard-operator"
+| filter kubernetes.pod_name like /kas-fleetshard-operator/
+....
+
+=== KAS Fleetshard Sync Logs
+
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.namespace_name = "redhat-kas-fleetshard-operator"
+| filter kubernetes.pod_name like /kas-fleetshard-sync/
+....
+
+=== Kafka Container Logs
+
+Brokers
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.container_name = "kafka"
+....
+
+Zookeepers
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.container_name = "zookeeper"
+....
+
+Other valid container_names:
+
+* admin-server
+* canary
+* <kafkaname>-kafka-exporter (use `filter kubernetes.container_name like /-kafka-exporter/`)
+
+You can also filter by the pod instead if you want to get all container logs for a pod.
+For example to get all kafak broker pod logs:
+
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.pod_name like /kafka-\d/
+....
+
+To filter to a specific Kafka, you need to either know the kafka namespace or the Kafka CR name.
+The name of the Kafka CR is prefixed on all pod names.
+For example, if the Kafka CR has a name 'my-first-kafka-instance',
+you can get the broker pod logs using this query:
+
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.pod_name like /my-first-kafka-instance-kafka-\d/
+....
+
+The Kafka namespace is typically prefixed with a sanitised version of the user id.
+For a user id of `davmarti_kafka_sre`, the namespace would be something like `davmarti-kafka-sre-1pcsdw1qezcmvwfrcdfwbkivxc6`.
+For example, to filter broker pod logs for this user, you can use the following:
+
+....
+fields @timestamp, @log, message
+| sort @timestamp desc
+| limit 100
+| filter kubernetes.namespace_name like /davmarti-kafka-sre/
+| filter kubernetes.pod_name like /kafka-\d/
+....
+
+== Exporting Logs
+
+There's an Export results dropdown at the top of the results when viewing logs in Insights.
+The Download table (CSV) option seems to be the most useful at this time.
+Each field from the `fields` value of your query will be included in the CSV, so including `message` at the very least is a good option.
+The log order is based on the @timestamp value from the query. `desc` can be useful when viewing in the UI (latest at the top), but when exporting `asc` is more natural (latest last).
+
+== How much storage is being used?
+
+The Resolution steps in https://aws.amazon.com/premiumsupport/knowledge-center/cloudwatch-logs-bill-increase/ show how to get the storage used for a specific Log Group
