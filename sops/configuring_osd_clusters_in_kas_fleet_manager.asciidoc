@@ -83,6 +83,13 @@ Unschedulable will stop any new Kafka instances being provisioned on this OSD cl
 2. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and remove the entry for the correct OSD cluster
 3. Wait 60 seconds and verify the OSD cluster is deleting through the OCM CLI or UI
 
+
+== Configuring cloud logging on the cluster
+To install logging on the cluster the following https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/cluster_logging_operator_installation.asciidoc[SOP] is needed.
+
+== Balancing the infra nodes
+To balance the infra nodes preform the following https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/master/sops/infra-node-pod-rebalancing.asciidoc#3-executeresolutionvalidate[SOP] when you are able to login with the IDP into the cluster as cluster-admin, otherwise you wont have permissions.
+
 == Creating a read-only group
 NOTE: This section requires a user with cluster-admin permissions to complete. Please ask one of the RTS team members to complete this step.
 
@@ -100,6 +107,9 @@ oc adm groups new mk-readonly-access
 ----
 oc adm policy add-cluster-role-to-group dedicated-readers mk-readonly-access
 ----
+
+== Assign the relevant users permissions
+To assign permissions to user to be able to access the cluster follow this https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/adding_user_to_sso.asciidoc#32-giving-the-user-permission-in-osd-data-plane-cluster[SOP]
 
 == Troubleshooting
 None.
