@@ -31,14 +31,14 @@ Adding an annotation tells the strimzi operator we want it to safely reboot the 
 Add a `strimzi.io/manual-rolling-update=true` annotation to the kafka or zookeeper pod.
 
 ```
-    oc annotate pod <POD_NAME> strimzi.io/manual-rolling-update=true
+    oc annotate pod <POD_NAME> strimzi.io/manual-rolling-update=true -n <POD_NAMESPACE>
 ```
 
 === Restart all pods
 Add a `strimzi.io/manual-rolling-update=true` annotation to the kafka or zookeeper statefulset.
 
 ```
-    oc annotate statefulset<STATEFULSET_NAME> strimzi.io/manual-rolling-update=true
+    oc annotate statefulset<STATEFULSET_NAME> strimzi.io/manual-rolling-update=true -n <STATEFULSET_NAMESPACE>
 ```
 == Validate
 
