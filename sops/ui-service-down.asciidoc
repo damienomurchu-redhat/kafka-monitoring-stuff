@@ -1,0 +1,48 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Update the UI to show the Service Down page
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe how to update the UI to show the Service Down page.
+
+This should be done when there is a major outage and the service is expected to be down for a significant period of time. It requires a new build of the UI to be promoted to production.
+
+== Prerequisites
+
+* Commit access to https://gitlab.cee.redhat.com/mk-ci-cd/application-services-ui
+
+== Execute/Resolution
+
+. Edit https://gitlab.cee.redhat.com/mk-ci-cd/application-services-ui setting the `serviceDown` config field to `true` for the `cloud.redhat.com`. For example
++
+----
+{
+...
+    "hostnames": [ "cloud.redhat.com" ],
+    "config": {
+      "serviceDown": true,
+      "resources": {
+...
+----
+. Commit this change and create a merge request
+. Wait until the pipeline passes and merge the merge request
+. Promote the changes to production using the link:promote_ui_to_prod.asciidoc[] SOP.
+
+== Validate
+
+Check that https://cloud.redhat.com/beta/application-services/streams/kafkas and https://cloud.redhat.com/beta/application-services/streams/service-accounts display the maintenance page.
+
+== Troubleshooting
