@@ -70,6 +70,104 @@ CLUSTER_LIST:
 ----
 2. Ping the control plane team in the "MK - Control Plane" gchat room to get the MR reviewed and merged
 
+== Create the fleetshard-operator restart cronjob
+This step is a workaround for a bug in the fleetshard operator which requires it to be restarted every 30 minutes. See https://issues.redhat.com/browse/MGDSTRM-3102[here] for details.
+
+1. Create the redhat-kas-fleetshard-operator namespace if it doesn't exist.
+[source,sh]
++
+----
+oc create namespace redhat-kas-fleetshard-operator
+----
+2. Create the cronjob, including the necessary configmap, service account, role and rolebinding.
++
+[source,sh]
+----
+cat << EOF | oc create -f -
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: fleetshard-operator-restarter
+  namespace: redhat-kas-fleetshard-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: fleetshard-operator-restarter
+  namespace: redhat-kas-fleetshard-operator
+rules:
+  - apiGroups: ["apps", "extensions"]
+    resources: ["deployments"]
+    resourceNames: ["kas-fleetshard-operator", "kas-fleetshard-sync"]
+    verbs: ["get", "patch", "list", "watch"]
+  - apiGroups: ["apps", "extensions"]
+    resources: ["deployments/scale"]
+    resourceNames: ["kas-fleetshard-operator", "kas-fleetshard-sync"]
+    verbs: ["get", "patch", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fleetshard-operator-restarter
+  namespace: redhat-kas-fleetshard-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: fleetshard-operator-restarter
+subjects:
+  - kind: ServiceAccount
+    name: fleetshard-operator-restarter
+    namespace: redhat-kas-fleetshard-operator
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleetshard-operator-restarter
+  namespace: redhat-kas-fleetshard-operator
+data:
+  restart.sh: |
+    echo "Scaling down deployments"
+    oc scale deployment kas-fleetshard-operator --replicas=0
+    oc scale deployment kas-fleetshard-sync --replicas=0
+    echo "Scaling up deployments"
+    oc scale deployment kas-fleetshard-operator --replicas=1
+    oc scale deployment kas-fleetshard-sync --replicas=0
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fleetshard-operator-restarter
+  namespace: redhat-kas-fleetshard-operator
+spec:
+  schedule: "*/30 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          serviceAccountName: fleetshard-operator-restarter
+          restartPolicy: Never
+          containers:
+            - name: oc
+              image: quay.io/openshift/origin-cli
+              command: ["/bin/sh"]
+              args: [ "-c","/fleetshard-operator-restarter/restart.sh"]
+              volumeMounts:
+                - mountPath: /fleetshard-operator-restarter
+                  name: fleetshard-operator-restarter
+          volumes:
+          - name: fleetshard-operator-restarter
+            configMap:
+              name: fleetshard-operator-restarter
+              defaultMode: 0777
+EOF
+----
+
 == Marking an OSD cluster as unschedulable 
 Unschedulable will stop any new Kafka instances being provisioned on this OSD cluster.
 
