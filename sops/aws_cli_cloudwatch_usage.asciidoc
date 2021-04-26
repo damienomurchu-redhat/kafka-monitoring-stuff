@@ -67,6 +67,7 @@ aws logs get-log-events --log-group-name <log_group_name> --log-stream-name <log
 
 === Searching and Filtering Logs
 1. Logs can be searched and filtered by using the `--filter-pattern` CLI parameter, usage information on which can be found https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SearchDataFilterPattern.html[here]
+2. See also the link:./cloudwatch_cheatsheet.asciidoc[CloudWatch CheatSheet] for examples of searching and filtering using the Insights UI.
 
 == Validate
 
