@@ -15,57 +15,50 @@ endif::[]
 toc::[]
 
 == Description
-
-The purpose of this SOP is to describe the process of creating users in MAS-SSO for Data Plane OSD cluster access. 
-
+This SOP aims to describe the process of creating users in MAS-SSO for Data Plane OSD cluster access.
 
 == Prerequisites
-
-You will need access to the following:
+You will need access to:
 
 * A member of the RTS Team
-* Rhoas-kafka-sre realm in MAS-SSO
+* The `Rhoas-kafka-sre` realm in MAS-SSO:
 ** https://keycloak-mas-sso-stage.apps.app-sre-stage-0.k3s7.p1.openshiftapps.com/auth/admin/rhoas-kafka-sre/console/#/realms/rhoas-kafka-sre/users[Stage]
 ** https://identity.api.openshift.com/auth/admin/rhoas-kafka-sre/console/#/realms/rhoas-kafka-sre/users[Prod]
-* OCM credentials to login as the creator of the data plane cluster which can be found in vault https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials[prod] https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/stage/service/credentials[stage]
-
+* OCM credentials to log in as the creator of the data plane cluster, which can be found in Vault
+** https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/production/service/credentials[Prod]
+** https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-service-api/stage/service/credentials[Stage]
 
 == Execute/Resolution
 === Creating the user in SSO
-[NOTE] 
+[NOTE]
 Steps 1-5 need to be done by a member of the RTS team
 
 1. Login into MAS SSO using your credentials Username:`kerberos`
-2. Navigate to the Rhoas-kafka-sre realm and then to users in the side bar on the left.
+2. Navigate to the `Rhoas-kafka-sre` realm and then to users in the sidebar on the left.
 3. Create the new user by clicking on the add user button on the right-hand side
-4. Give the user a user name and any other information you want to add. Make sure the user enabled slider is set to on.
-
+4. Give the user a username and any other information you want to add. Make sure the user enabled slider is set to on.
++
 image::images/add_user.png[]
-[start=5]
-5. Once you click save you will be able to give the user credentials. This is done by clicking the credentials tab and either giving them a temporary password which the user changes when they first login or a permanent password that can't be changed.
-
++
+5. Once you click save, you will be able to give the user credentials. This is done by clicking the credentials tab and giving them a temporary password which the user changes when they first log in.
++
+The temporary password that new users should be assigned can be found in https://vault.devshift.net/ui/vault/secrets/managed-services/show/rts/production_data_plane_clusters_temp_password[Vault]. The username and password can be distributed to the user over Instant Messaging (e.g. Google Hangouts).
++
 image::images/add_creds.png[]
 
-
 === Giving the user permission in OSD data plane cluster
-1. To give the users permissions you will need ocm permissions to login as the service account that created the data plane 
-* Prod: `ocm login --url=https://api.openshift.com --client-id=<client-id> --client-secret=<client-secret>` 
+1. To give the users permissions, you will need ocm permissions to log in as the service account that created the data plane
+* Prod: `ocm login --url=https://api.openshift.com --client-id=<client-id> --client-secret=<client-secret>`
 * Stage: `ocm login --url=https://api.stage.openshift.com --client-id=<client-id> --client-secret=<client-secret>`
-2. Add or remove a user in the user.yaml file 
+2. Add or remove a user in the user.yaml file
 3. `chmod +x permissions.sh`
 4. `./permissions.sh -a` to add users
 5. `./permissions.sh -r` to remove users
 
 == Validate
-
 1. Check that the users have been created using the ocm get command from the SOP doc.
-
 2. Make sure the users can log in to the data plane cluster using the kafka_sre idp option
-
-[start=3]
 3. Ensure they have the relevant permissions in the cluster by checking the groups in the user management tab of the cluster
 
-
 == Troubleshooting
-
-If people are unable to login ensure the username specified in sso is the same as the one your giving permissions to in user.json
+1. If people are unable to login ensure the username specified in SSO is the same as the one your giving permissions to in `user.json`
