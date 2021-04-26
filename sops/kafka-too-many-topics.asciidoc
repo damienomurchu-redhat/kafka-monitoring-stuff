@@ -19,7 +19,7 @@ toc::[]
 It is possible for an end-user to break a kafka instance by creating too many partitions (MGDSTRM-3052). The system currently has no way to prevent this.
 At its most extereme, it is possible for system to enter into a state were it is irrecoverable. At this point neither end-user nor RTS will be able to recover the instance and there is no recourse apart from deleting the instance.
 
-The issue begins to manifest at about 6000 partition (2000 topics with the default of 3 partitions each).  The system then degrades until at about 27000 partitions (9000 topics with the default of 3 partitions each) when the system will become irrecoverable.
+The issue begins to manifest at about 6000 partitions (2000 topics with the default of 3 partitions each).  The system then degrades until at about 27000 partitions (9000 topics with the default of 3 partitions each) when the system will become irrecoverable.
 
 If the situation occurs, the following alerts will be seen to fire:
 
