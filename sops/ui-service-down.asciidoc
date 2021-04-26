@@ -26,7 +26,7 @@ This should be done when there is a major outage and the service is expected to 
 
 == Execute/Resolution
 
-. Edit https://gitlab.cee.redhat.com/mk-ci-cd/application-services-ui setting the `serviceDown` config field to `true` for the `cloud.redhat.com`. For example
+. Edit ./config/config.json setting the `serviceDown` config field to `true` for the `cloud.redhat.com`. For example
 +
 ----
 {
