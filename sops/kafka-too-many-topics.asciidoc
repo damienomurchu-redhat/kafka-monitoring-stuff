@@ -1,0 +1,37 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Too Many Kafka Topics/Partitions
+
+toc::[]
+
+== Description
+
+It is possible for an end-user to break a kafka instance by creating too many topics or partitions (MGDSTRM-3052). The system currently has no way to prevent this.
+At its most extereme, it is possible for system to enter into a state were it is irrecoverable. At this point neither end-user nor RTS will be able to recover the instance and there is no recourse apart from deleting the instance.
+
+The issue begins to manifest at about 2000 topics.  The system then degrades until at about 9000 topics when the system will be irrecoverable.
+
+If the situation occurs, the following alerts will be seen to fire:
+
+1. BrokerScrapeProblem
+1. AdminServerFailedRequests
+1. CanaryProduceConsumeLatency
+
+In addition, the instance's kafka-exporter pod will crash loop (reporting an OOM) and the kafka broker pod themselves will crash as the number of topics reached 9000.
+
+The end-user will see sluggish performance, and errors from kafka itself and the Console and Command Line APIs.
+
+== Execute/Resolution
+
+1. To address root cause, the number of topics needs to be reduced.  If the instance is still operable, this can be done by the end-user utilising the delete topic function.
+1. If this system has become unresponsive, the only recourse is to delete the kafka instance.
