@@ -1,0 +1,33 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Too Many Kafka Connections
+
+toc::[]
+
+== Description
+
+The Managed Kafka service advertises 100 connections available to the end-user.  Owing to a defect MGDSTRM-3049 the number of connections usable safely by
+the end user is 74.
+
+In the case where the user tries to create more then 74 connections, it possible that the system will exhibit the following failures:
+
+* inability of the end-user to view/control their topics/consumer groups from the Console or the Command Line as the Admin API Server is unable to get a connection to the Kafka brokers.  This will be reported signal by the https://github.com/bf2fc6cc711aee1a0c2a/observability-resources-mk/blob/main/resources/prometheus/prometheus-rules.yaml#L485[`AdminServerFailedRequests`] alert.
+* inability for the Canary to measure end to end latency.  This will be signal by https://github.com/bf2fc6cc711aee1a0c2a/observability-resources-mk/blob/main/resources/prometheus/prometheus-rules.yaml#L462[`CanaryNotActive`] alerts as the Canary fails to make progress.
+* reports from the end-user themselves that their application is unable to connect completely or is seeminly spontanteously disconnected.
+
+The purpose of this SOP is to describe the process of resolving this issue:
+
+== Execute/Resolution
+
+1. To address root cause, if the user is in contact with support, ask the end-user to reduce the number of connections made by their application to below 74.  They need to account for the fact that most kafka clients create multiple TCP/IP connections under the abstraction. This varies from kafka client, but a typically it is one kafka client maintains 4 (1 per broker + 1 metadata) TCP connections.
+1. If the user is not in contact with support the alternative is to link:adding-users-into-deny-list.asciidoc[add the user to the deny list] which will remove the instance.
