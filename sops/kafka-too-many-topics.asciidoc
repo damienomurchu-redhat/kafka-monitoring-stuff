@@ -34,4 +34,4 @@ The end-user will see sluggish performance, and errors from kafka itself and the
 == Execute/Resolution
 
 1. To address root cause, the number of topics needs to be reduced.  If the instance is still operable, this can be done by the end-user utilising the delete topic function.
-1. If this system has become unresponsive, the only recourse is to delete the kafka instance.
+1. If this system has become unresponsive, the only recourse is for the kafka instance to be removed. This is done by link:adding-users-into-deny-list.asciidoc[adding the user to the deny list] which will remove the instance.
