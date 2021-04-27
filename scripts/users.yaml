@@ -8,9 +8,4 @@ cluster-admins:
     - rshelly
     - stobin
     - tdavidso
-    
-read-only:
-    - dffrench
-    - weil
-    - pbraun
-    - ppaszki
+
