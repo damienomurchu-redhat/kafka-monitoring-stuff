@@ -79,9 +79,44 @@ Unschedulable will stop any new Kafka instances being provisioned on this OSD cl
 1. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and change the `kafka_instance_limit` field to the number of Kafkas you would like the maximum to be for the correct OSD cluster
 
 == Removing an OSD cluster from production
-1. Verify all Kafka instances on the OSD cluster have been fully removed
-2. Open an MR against the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] and remove the entry for the correct OSD cluster
-3. Wait 60 seconds and verify the OSD cluster is deleting through the OCM CLI or UI
+1. Verify all Kafka instances on the OSD cluster have been fully removed. The command below checks all namespaces for Kafka CR's:
++
+----
+oc get kafkas -A
+
+// Expected output
+error: the server doesn't have a resource type "kafkas"
+----
+2. Verify that the Cluster Logging operator add-on is no longer enabled. The following command should return a `404`:
++
+----
+ocm get /api/clusters_mgmt/v1/clusters/<cluster_id>/addons/cluster-logging-operator
+
+// Expected output
+{
+  "kind": "Error",
+  "id": "404",
+  "href": "/api/clusters_mgmt/v1/errors/404",
+  "code": "CLUSTERS-MGMT-404",
+  "reason": "Add-on 'cluster-logging-operator' not enabled on cluster '<cluster_id>'",
+  "operation_id": "<operation_id>"
+}
+----
++
+If the operator add-on is enabled, the below command can be used to remove the add-on.
++
+NOTE: You must be either the cluster owner or org admin to remove the add-on
++
+----
+ocm delete /api/clusters_mgmt/v1/clusters/<cluster_id>/addons/cluster-logging-operator
+----
+3. Modify the `CLUSTER_LIST` within the `ENVIRONMENT: production` section of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file] by removing the OSD cluster you want to delete from the list
+4. Open an MR against with the changes from the previous step. Once the change has been verified, wait for it to merge, and then wait for the change to roll out to the production `kas-fleetmanager`
+5. To verify that the roll out has been completed, check the config map on the APP-SRE cluster, which can be found https://console-openshift-console.apps.app-sre-prod-04.i5h0.p1.openshiftapps.com/k8s/ns/managed-services-production/configmaps/ocm-managed-services-dataplane-cluster-scaling-config/[here]. The cluster being removed should not be present in the `dataplane-cluster-configuration.yaml` section of the config map.
++
+NOTE: Please note that is can take up to 30 minutes for the changes to be reflected in the config map
++
+6. Verify that the OSD cluster is deleting through the OCM CLI or OCM UI
 
 
 == Configuring cloud logging on the cluster
