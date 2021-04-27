@@ -26,7 +26,7 @@ You will need access to the relevant Fleet Shard OSD cluster.  You also will nee
 
 == Execute/Resolution
 
-Follow the instructions in https://github.com/bf2fc6cc711aee1a0c2a/kas-fleetshard/blob/main/ADVANCED.md/blob/main/ADVANCED.md#logging-adjustments-at-runtime[the upstream project] to create an appropriately named ConfigMap for either the operator or sync.  The contents will be an application.properties file containing the level overrides.
+Follow the instructions in https://github.com/bf2fc6cc711aee1a0c2a/kas-fleetshard/blob/main/ADVANCED.md#logging-adjustments-at-runtime[the upstream project] to create an appropriately named ConfigMap for either the operator or sync.  The contents will be an application.properties file containing the level overrides.
 
 == Validate
 
@@ -37,5 +37,7 @@ It will take a minute or more for the ConfigMap to be propagated as a volume mou
 To toggle the logging levels back to their default INFO level without a container restart, you need modify the ConfigMap to specify INFO as the category level.
 
 Enabling TRACE logging is not expected to be needed.
+
+Setting the log level higher than INFO, for example WARNING, will suppress the INFO log about the log level being updated.
 
 Adjusting the root category level is not recommended.
