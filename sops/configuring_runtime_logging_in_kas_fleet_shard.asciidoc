@@ -22,11 +22,11 @@ This is accomplished via ConfigMaps, so that the logging changes will be in plac
 
 == Prerequisites
 
-You will need access to the relevant Fleet Shard OSD cluster.  Please contact the kafka instances team for more information about what logging categories may be of interest.  At present those categories are org.bf2 (the project code), io.javaoperatorsdk, and io.fabric8.
+You will need access to the relevant Fleet Shard OSD cluster.  You also will need to know what logging categories should be affected - at present those categories are org.bf2 (the project code), io.javaoperatorsdk, and io.fabric8.  Please contact the https://github.com/bf2fc6cc711aee1a0c2a/kas-fleetshard[fleetshard team] for more information about what logging categories may be of interest.
 
 == Execute/Resolution
 
-Follow the instructions in https://github.com/shawkins/mk-agent/blob/main/ADVANCED.md#logging-adjustments-at-runtime[the upstream project] to create an appropriately named ConfigMap for either the operator or sync.  The contents will be an application.properties file containing the level overrides.
+Follow the instructions in https://github.com/bf2fc6cc711aee1a0c2a/kas-fleetshard/blob/main/ADVANCED.md/blob/main/ADVANCED.md#logging-adjustments-at-runtime[the upstream project] to create an appropriately named ConfigMap for either the operator or sync.  The contents will be an application.properties file containing the level overrides.
 
 == Validate
 
@@ -37,3 +37,5 @@ It will take a minute or more for the ConfigMap to be propagated as a volume mou
 To toggle the logging levels back to their default INFO level without a container restart, you need modify the ConfigMap to specify INFO as the category level.
 
 Enabling TRACE logging is not expected to be needed.
+
+Adjusting the root category level is not recommended.
