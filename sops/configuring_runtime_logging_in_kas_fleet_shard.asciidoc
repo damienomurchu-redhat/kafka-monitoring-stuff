@@ -1,0 +1,39 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Configuring Runtime Logging In KAS Fleet Shard Components
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of altering the logging levels of running Fleet Shard components operator and sync.
+
+This is accomplished via ConfigMaps, so that the logging changes will be in place even after container restarts.
+
+== Prerequisites
+
+You will need access to the relevant Fleet Shard OSD cluster.  Please contact the kafka instances team for more information about what logging categories may be of interest.  At present those categories are org.bf2 (the project code), io.javaoperatorsdk, and io.fabric8.
+
+== Execute/Resolution
+
+Follow the instructions in https://github.com/shawkins/mk-agent/blob/main/ADVANCED.md#logging-adjustments-at-runtime[the upstream project] to create an appropriately named ConfigMap for either the operator or sync.  The contents will be an application.properties file containing the level overrides.
+
+== Validate
+
+It will take a minute or more for the ConfigMap to be propagated as a volume mount.  Once it has been picked up by the pod, you will see a log message at an INFO level "Log level updated 'category' changed to 'level'".
+
+== Troubleshooting
+
+To toggle the logging levels back to their default INFO level without a container restart, you need modify the ConfigMap to specify INFO as the category level.
+
+Enabling TRACE logging is not expected to be needed.
