@@ -30,4 +30,4 @@ The purpose of this SOP is to describe the process of resolving this issue:
 == Execute/Resolution
 
 1. To address root cause, if the user is in contact with support, ask the end-user to reduce the number of connections made by their application to below 74.  They need to account for the fact that most kafka clients create multiple TCP/IP connections under the abstraction. This varies from kafka client, but a typically it is one kafka client maintains 4 (1 per broker + 1 metadata) TCP connections.
-1. If the user is not in contact with support the alternative is link:adding-users-into-deny-list.asciidoc[to add the user to the deny list]
+1. If the user is not in contact with support the alternative is to link:adding-users-into-deny-list.asciidoc[add the user to the deny list].
