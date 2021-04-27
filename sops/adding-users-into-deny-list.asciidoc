@@ -1,0 +1,32 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+= Adding users into the deny list
+
+toc::[]
+
+== Description
+
+This SOP outlines the process of adding users into the deny list to ban them from accessing the service.
+
+== Prerequisites
+1. You are able to open merge request in https://gitlab.cee.redhat.com/service/app-interface[AppInterface] Gitlab project.
+
+== Execute/Resolution
+
+Open a MR against AppInterface updating the `data/services/managed-services/cicd/saas/saas-kas-fleet-manager-production.yaml` file.
+In that file, add the denied users in the `DENIED_USERS` parameter. The parameter is a list of usernames in yaml format. 
+
+== Validate
+None
+
+== Troubleshooting
+None
