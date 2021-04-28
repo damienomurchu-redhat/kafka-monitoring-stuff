@@ -1,0 +1,40 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Add a user to the deny list
+
+toc::[]
+
+== Description
+This SOP outlines how to add a user to the deny list which will also remove their existing Kafka instances.
+
+== Prerequisites
+1. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+
+== Execute/Resolution
+1. Retrieve the username for the Kafka instances owner. The username is prefixed to the Kafka instances namespace. The format is `<username>-<kafkaId>`. Once you strip out the last `-` and the `kafkaId`, you will be left with the username.
+** Note: The username could have special characters which get replaced by additional `-`. If the username looks to have `--` together, the prefixed username won't be correct.
+2. Add the username to the `DENIED_USERS` property under under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file]. The property is a list of usernames in yaml format.
++
+[source,yaml]
+----
+DENIED_USERS:
+  - denied-test-user1@example.com
+  - denied-test-user2@example.com
+----
+2. Open an MR and contact one of the approvers listed by the @devtools-bot.
+
+== Validate
+1. Validate any existing instances owned by this username have been removed by searching by the username in the https://grafana-route-grafana.apps.mk-observe.trii.p1.openshiftapps.com/d/TjDipAuGz/i-have-this-id-its-for-something-but-i-dont-know-what-help?orgId=1[fleet dashboard]
+
+== Troubleshooting
+None

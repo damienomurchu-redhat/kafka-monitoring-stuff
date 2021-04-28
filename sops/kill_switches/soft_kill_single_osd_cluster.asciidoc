@@ -1,0 +1,32 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Hard kill single OSD cluster
+
+toc::[]
+
+== Description
+This SOP outlines how to soft kill a single data plane OSD cluster, the existing Kafka instances will remain active until they expire.
+
+== Prerequisites
+1. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+
+== Execute/Resolution
+1. Update the `schedulable` property to `false` for the specific OSD cluster in `CLUSTER_LIST` under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file].
+3. Open an MR and contact one of the approvers listed by the @devtools-bot.
+4. Contact the Incident Commanders, as per https://docs.google.com/document/d/1MyWj_V5QCFVHDjedo2OMeikslcMrf74nBC-kIATOh84/edit#, asking for the Status Page to be updated to say the Service is no longer available
+
+== Validate
+1. Validate over the following hours/days that no new Kafkas are provisioned to this OSD cluster.
+
+== Troubleshooting
+None

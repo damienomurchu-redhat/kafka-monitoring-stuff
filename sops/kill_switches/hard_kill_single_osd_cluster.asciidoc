@@ -1,0 +1,43 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Hard kill single OSD cluster
+
+toc::[]
+
+== Description
+This SOP outlines how to immediately remove a single data plane OSD cluster.
+
+== Prerequisites
+1. Fork the https://gitlab.cee.redhat.com/service/app-interface[app-interface] repository and add the https://gitlab.cee.redhat.com/devtools-bot[devtools-bot] user as a Maintainer of your fork.
+2. Logged in as a user in the `Red Hat Kafka Service Fleet Manager` organisation (external_id of `14410147`) in OCM production. To verify you are logged in as a user in this org, run `ocm whoami | grep 14410147` and verify the external_id is shown.
+
+== Execute/Resolution
+1. Update the `schedulable` property to `false` for the specific OSD cluster in `CLUSTER_LIST` under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file]
+2. Open an MR and contact one of the approvers listed by the @devtools-bot.
+3. Log in to the https://cloud.redhat.com/openshift[OCM UI] and select the specific OSD cluster.
+4. Hibernate the cluster from the actions drop down.
+5. Contact the Incident Commanders, as per https://docs.google.com/document/d/1MyWj_V5QCFVHDjedo2OMeikslcMrf74nBC-kIATOh84/edit#, asking for the Status Page to be updated to say the Service is no longer available
+
+*Execute 48 hours after the above steps*
+
+1. After 48 hours, unhibernate the OSD cluster, otherwise Kafkas will not be deleted.
+2. Once zero Kafka instances remain in any state from the https://grafana.app-sre.devshift.net/d/WLBv_KuMz/kas-fleet-manager-metrics?orgId=1[Kas Fleet Manager metrics dashboard], proceed to the next step.
+3. Remove the specific cluster from the `CLUSTER_LIST` under the `managed-services-production.yml` namespace parameters of the https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml[kas-fleet-manager saas file].
+4. Open an MR and contact one of the approvers listed by the @devtools-bot.
+
+== Validate
+1. Validate you can no longer log in to the specific OSD cluster.
+
+== Troubleshooting
+=== Hibernation taking longer than expected
+1. Contact SRE-P through the `sd-sre-platform` slack channel.
