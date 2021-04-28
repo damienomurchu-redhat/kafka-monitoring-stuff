@@ -51,7 +51,10 @@ image::images/add_creds.png[]
 1. To give the users permissions you will need ocm permissions to login as the service account that created the data plane 
 * Prod: `ocm login --url=https://api.openshift.com --client-id=<client-id> --client-secret=<client-secret>` 
 * Stage: `ocm login --url=https://api.stage.openshift.com --client-id=<client-id> --client-secret=<client-secret>`
-2. Run the following https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/tree/main/scripts/permissions.sh[script]. 
+2. Add or remove a user in the user.yaml file 
+3. `chmod +x permissions.sh`
+4. `./ permissions.sh`
+5. Input add to add the users or input remove to delete the users
 
 == Validate
 
