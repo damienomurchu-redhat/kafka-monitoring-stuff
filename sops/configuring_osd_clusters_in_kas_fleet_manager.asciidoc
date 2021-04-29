@@ -83,6 +83,7 @@ Unschedulable will stop any new Kafka instances being provisioned on this OSD cl
 +
 ----
 oc get kafkas -A
+No resources found
 ----
 2. Verify that the Cluster Logging operator add-on is no longer enabled. The following command should return a `404`:
 +
