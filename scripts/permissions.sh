@@ -8,6 +8,35 @@
 file="users.yaml"
 clus_users=$(yq e '.cluster-admins[]' $file )
 
+actionAdd=false
+actionRemove=false
+
+print_usage () {
+    echo "Script to add or remove cluster_admin users from data plane OSD clusters"
+    echo ""
+    echo "-a add users in users.yaml file"
+    echo "-r remove users not in users.yaml file"
+}
+
+while getopts "arh" arg; do
+    case "${arg}" in
+        a)
+            actionAdd=true
+            ;;
+        r)
+            actionRemove=true
+            ;;
+        h)
+            print_usage
+            exit 0
+            ;;
+        ?)
+            print_usage
+            exit 0
+            ;;
+    esac
+done
+
 cluster_ids () {
     clus_id=($(ocm list clusters --parameter search="name like 'mk-___________%'"   | grep -v ID| awk '{print $1}'))
 
@@ -45,16 +74,19 @@ remove_cluster_admins (){
         rm users.txt && rm perm.txt
 }
 
-echo "To add a user input add, to remove input remove"
-read input
-case $input in 
-add)    echo "Adding user(s) to data plane clusters"
-        cluster_ids
-        add_cluster_admin
-        ;;
-remove) echo "Removing user(s) from data plane clusters"
-        cluster_ids
-        remove_cluster_admins
-        ;;
-esac
+if [[ ${actionAdd} == false ]] && [[ ${actionRemove} == false ]]; then
+    print_usage
+    exit 0
+fi
 
+cluster_ids
+
+if [[ ${actionAdd} == true ]]; then
+    echo "Adding user(s) to data plane clusters"
+    add_cluster_admin
+fi
+
+if [[ ${actionRemove} == true ]]; then
+    echo "Removing user(s) from data plane clusters"
+    remove_cluster_admins
+fi
