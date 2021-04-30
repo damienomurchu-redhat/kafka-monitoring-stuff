@@ -53,7 +53,7 @@ image::images/add_creds.png[]
 * Stage: `ocm login --url=https://api.stage.openshift.com --client-id=<client-id> --client-secret=<client-secret>`
 2. Add or remove a user in the user.yaml file 
 3. `chmod +x permissions.sh`
-4. `./ permissions.sh -a` to remove users
+4. `./permissions.sh -a` to add users
 5. `./permissions.sh -r` to remove users
 
 == Validate
