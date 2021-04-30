@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: observatorium-monitoring
+  name: observatorium-monitoring-prometheus-rules
+  namespace: <namespace>
+spec:
+  groups:
+  - name: kafka-api-slo
+    rules:
+    - alert: test
+      annotations:
+        message: 'placeholder alert'
+      expr: |
+        up
+      for: 2m
+      labels:
+        name: test
+        severity: warning
+   

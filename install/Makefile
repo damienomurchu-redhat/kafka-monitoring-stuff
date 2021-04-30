@@ -22,6 +22,11 @@ export DEX_PASSWORD ?=dex-password
 export DEX_SECRET ?=dex-secret
 export DEX_USERNAME ?=dex-username
 
+export PROM_URL ?= prometheus-operated
+export OBSERVATORIUM_MONITORING ?= observatorium-monitoring
+export OBSERVATORIUM_MONITORING_GRAFANA ?= observatorium-grafana
+export OBSERVATORIUM_MONITORING_PROMETHEUS ?= observatorium-prometheus
+
 DEX_P_B := $(shell echo ${DEX_PASSWORD} | base64)
 DEX_S_B := $(shell echo ${DEX_SECRET} | base64)
 DEX_U_B := $(shell echo ${DEX_USERNAME} | base64)
@@ -114,6 +119,14 @@ uninstall/kafka/cr:
 .PHONY: install/monitoring/global
 install/monitoring/global:
 	make -C resources/monitoring-global all
+
+.PHONY: install/monitoring/observatorium
+install/monitoring/observatorium:
+	make -C resources/monitoring-observatorium all
+
+.PHONY: uninstall/monitoring/observatorium
+uninstall/monitoring/observatorium:
+	make -C resources/monitoring-observatorium clean
 
 .PHONY: install/logging
 install/logging:
