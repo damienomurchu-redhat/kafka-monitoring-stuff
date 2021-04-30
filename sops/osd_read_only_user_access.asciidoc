@@ -14,12 +14,12 @@ endif::[]
 toc::[]
 
 == Description
-This SOP outlines the process of adding users to the existing `mk-readonly-access` read group on an OSD cluster. The user will have access to the cluster via the UI, and the `oc` command line tool.
+This SOP outlines the process of adding users to the existing `mk-readonly-access` read-only group on an OSD data-plane cluster. The user will have access to the cluster via the UI, and the `oc` command line tool.
 
 == Prerequisites
 1. Access to the OSD cluster. The OSD cluster must have the `Kafka_SRE` IDP setup, and your user must be part of the `cluster-admins` group.
-2. The `mk_readonly_access` group should exist on the cluster. The group is created as part of https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/[this] SOP.
-3. The user requesting access should be part of the `RHOAS-KAFKA-SRE` SSO realm. The SOP to add a user to the realm can be found https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/adding_user_to_sso.asciidoc[here].
+2. The `mk_readonly_access` group should exist on the cluster. The group is created as part of https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/configuring_osd_clusters_in_kas_fleet_manager.asciidoc#10-creating-a-read-only-group[this] SOP. If the group doesn't exist, you can follow the steps in the SOP to create it.
+3. The user requesting access should be part of the `RHOAS-KAFKA-SRE` SSO realm. The SOP to add a user to the realm can be found https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/adding_user_to_sso.asciidoc#31-creating-the-user-in-sso[here].
 
 == Execute/Resolution
 1. Log in to the cluster using the `Kafka_SRE` IDP, and log in via a CLI using the API token.
