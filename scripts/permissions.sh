@@ -5,6 +5,8 @@
 # ./ permissions.sh
 # Input add to add the users or input remove to delete the users
 
+CLUSTER_SEARCH_PATTERN=${CLUSTER_SEARCH_PATTERN:-"mk-___________"}
+
 file="users.yaml"
 clus_users=$(yq e '.cluster-admins[]' $file )
 
@@ -38,7 +40,7 @@ while getopts "arh" arg; do
 done
 
 cluster_ids () {
-    clus_id=($(ocm list clusters --parameter search="name like 'mk-___________%'"   | grep -v ID| awk '{print $1}'))
+    clus_id=($(ocm list clusters --parameter search="name like '${CLUSTER_SEARCH_PATTERN}%'"   | grep -v ID| awk '{print $1}'))
 
 }
 
