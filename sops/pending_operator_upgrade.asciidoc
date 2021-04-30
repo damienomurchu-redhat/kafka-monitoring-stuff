@@ -1,0 +1,83 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Operator Upgrade Rollout In Pending State Due To Previously Failed Updates
+
+toc::[]
+
+== Description
+
+This SOP outlines steps to resolve issue with OLM failing to upgrade operator due to previously failed rollouts. Typically it happens when OLM for some reason unable to cleanly remove resources associated with previous version of the operator. In OSD console it would appear as pending upgrade with multiple previous versions of the same operator showing `Cannot update` status. In cli command `oc get csv --namespace redhat-managed-kafka-operator` would produce list of multiple operator csv objects in various states 
+```
+strimzi-cluster-operator.v0.22.1-2        Strimzi                                 0.22.1-2          strimzi-cluster-operator.v0.22.1-1        Replacing
+strimzi-cluster-operator.v0.22.1-3        Strimzi                                 0.22.1-3          strimzi-cluster-operator.v0.22.1-2        Pending
+strimzi-cluster-operator.v0.22.1-4        Strimzi                                 0.22.1-4          strimzi-cluster-operator.v0.22.1-3        Pending
+```
+For Managed Kafka Strimzi Operator has been known to be susceptive to this condition (MGDSTRM-3070), however it is not specific to particular operator
+
+image::images/operator_update_pending.png[]
+
+== Prerequisites
+
+1. It is upgrade to new operator version and not initial rollout
+2. Multiple versions of the operator are present in UI in the same namespace or cli command `oc get csv --namespace redhat-managed-kafka-operator` returns multiple versions
+3. Problem is persistent, eg. it is not in the course of normal operator rollout where multiple versions of operator can be seen for some time until new version has been installed
+4. There are not alternative ways to fix the issue with original deployment
+
+== Execute/Resolution
+
+1. Check if multiple versions of operator are present in the same namespace in different states
+
+`oc get csv --namespace redhat-managed-kafka-operator`
+
+  Command output example:
+```
+strimzi-cluster-operator.v0.22.1-2        Strimzi                                 0.22.1-2          strimzi-cluster-operator.v0.22.1-1        Replacing
+strimzi-cluster-operator.v0.22.1-3        Strimzi                                 0.22.1-3          strimzi-cluster-operator.v0.22.1-2        Pending
+strimzi-cluster-operator.v0.22.1-4        Strimzi                                 0.22.1-4          strimzi-cluster-operator.v0.22.1-3        Pending
+```
+[start=2]
+2. Check potential reasons why update is in pending state by checking status
+
+`oc describe csv strimzi-cluster-operator.v0.22.1-4 --namespace redhat-managed-kafka-operator`
+
+  Command output example:
+```
+- lastTransitionTime: 2021-04-22T18:22:01Z
+    lastUpdateTime: 2021-04-22T18:22:02Z
+    message: |
+      installing: waiting for deployment strimzi-cluster-operator.v0.22.1 to become ready: Waiting for rollout to finish: 0 of 1 updated replicas are available...
+    phase: Installing
+    reason: InstallWaiting
+  - lastTransitionTime: 2021-04-22T18:22:10Z
+    lastUpdateTime: 2021-04-22T18:22:10Z
+    message: 'install failed: deployment strimzi-cluster-operator.v0.22.1 not ready
+      before timeout: deployment "strimzi-cluster-operator.v0.22.1" exceeded its progress
+      deadline'
+    phase: Failed
+```
+[start=3]
+3. Delete all csv objects with exception of desired version (strimzi-cluster-operator.v0.22.1-4 in our example) 
+
+`oc delete csv strimzi-cluster-operator.v0.22.1-2 -namespace edhat-managed-kafka-operator`
+
+
+== Validate
+
+1. Check of only one version of the csv is remaining and it is showing succeeded status 
+
+`oc get csv --namespace redhat-managed-kafka-operator`
+
+
+== Troubleshooting
+
+None
