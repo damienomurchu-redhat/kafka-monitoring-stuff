@@ -17,7 +17,7 @@ toc::[]
 
 This SOP outlines the process of installing the Cluster Logging Operator (CLO) addon on an OSD cluster and configuring the log retention period in AWS CloudWatch.
 
-NOTE: Only owners of the target OCM cluster and OCM organisational administrators have the required permissions to install CLO. If you are not either of these, please ask someone who has the permissions necessary to complete the installation process for you, using the steps in this SOP.
+NOTE: Only owners of the target OCM cluster and OCM organisational administrators have the required permissions to install the CLO. If you are not either of these, please ask someone who has the permissions necessary to complete the installation process for you, using the steps in this SOP.
 
 == Prerequisites
 1. Access to the OCM environment in which the cluster is located
@@ -40,12 +40,12 @@ WARNING: Reducing the retention period will permanently delete older log data. P
 +
 2. Log in to the AWS console in which the cluster resides.
 3. Navigate to the CloudWatch service, then click `Log groups` from the menu on the left-hand side.
-4. For each of the Log groups listed (there should be an `\*.application` and `*.infrastructure` group), click on the `Never expire` retention period and choose the required retention period from the drop-down menu:
+4. For each of the Log groups listed (there should be an `\*.application` group), click on the `Never expire` retention period and choose the required retention period from the drop-down menu:
 +
 image::images/retention_settings.png[]
 
 == Validate
-1. Ensure that the `\*.application` and `*.infrastructure` log groups have been created in CloudWatch and that both contain logs from the clusters pods.
+1. Ensure that the `\*.application` log groups have been created in CloudWatch and that both contain logs from the clusters pods.
 
 == Troubleshooting
 1. No CloudWatch log groups being displayed in AWS
