@@ -17,6 +17,8 @@ toc::[]
 == Description
 This SOP aims to describe the process of creating users in MAS-SSO for Data Plane OSD cluster access.
 
+NOTE: This SOP is used to give users `cluster-admin` access to data-plane clusters. If you need to give a user(s) read-only access to a data-plane cluster(s), follow the steps in https://github.com/bf2fc6cc711aee1a0c2a/kas-sre-sops/blob/main/sops/osd_read_only_user_access.asciidoc[this] SOP
+
 == Prerequisites
 You will need access to:
 
