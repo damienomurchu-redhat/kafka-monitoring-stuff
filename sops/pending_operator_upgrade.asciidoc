@@ -73,7 +73,7 @@ strimzi-cluster-operator.v0.22.1-4        Strimzi                               
 
 == Validate
 
-1. Check of only one version of the csv is remaining and it is showing succeeded status 
+1. Check if only one version of the csv is remaining and it is showing succeeded status 
 
 `oc get csv --namespace redhat-managed-kafka-operator`
 
