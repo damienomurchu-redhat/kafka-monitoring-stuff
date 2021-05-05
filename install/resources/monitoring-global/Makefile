@@ -46,6 +46,9 @@ create/dashboards:
 	@cat ./dashboards/pod.yaml | sed -e 's/<namespace>/$(GLOBAL_MONITORING_NAMESPACE)/g' | cat | oc apply -f -
 	@cat ./dashboards/pv.yaml | sed -e 's/<namespace>/$(GLOBAL_MONITORING_NAMESPACE)/g' | cat | oc apply -f -
 	@cat ./dashboards/mk_usage.yaml | sed -e 's/<namespace>/$(GLOBAL_MONITORING_NAMESPACE)/g' | cat | oc apply -f -
+	@cat ./dashboards/fleet_links.yaml | sed -e 's/<namespace>/$(GLOBAL_MONITORING_NAMESPACE)/g' | cat | oc apply -f -
+	@cat ./dashboards/fleet_load.yaml | sed -e 's/<namespace>/$(GLOBAL_MONITORING_NAMESPACE)/g' | cat | oc apply -f -
+	@cat ./dashboards/id_finder.yaml | sed -e 's/<namespace>/$(GLOBAL_MONITORING_NAMESPACE)/g' | cat | oc apply -f -
 
 all: create/namespace create/thanos/receiver create/thanos/querier create/grafana create/dashboards create/loki
 	@echo "Done installing fleet wide monitoring stack"
