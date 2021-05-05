@@ -167,6 +167,23 @@ curl --request POST \
 
 __NOTE__: Observatorium is currently not part of the `all` or `clean` targets.
 
+## Install observatorium monitoring
+To install monitoring on observatorium itself run the following command:
+
+`make install/monitoring/observatorium`
+
+The following will be installed:
+* Grafana
+    * Dashboards
+* Promtheus
+    * Metrics from Thanos, Loki and Prometheus
+    * Alerts
+
+## Uninstall observatorium monitoring
+To install observatorium monitoring run the following command:
+
+`make uninstall/monitoring/observatorium`
+
 ## Uninstallation
 
 ```sh
@@ -185,6 +202,7 @@ The following namespaces are created:
 * *managed-services-monitoring-prometheus*: contains the on cluster Prometheus that scrapes Kafka metrics
 * *managed-services-monitoring-grafana*: contains the on cluster Grafana instance
 * *kafka-observability* contains the observability operator catalogue source
+* *observatorium-monitoring* contains the monitoring stack to monitor observatorium itself
 
 ## Notes
 
