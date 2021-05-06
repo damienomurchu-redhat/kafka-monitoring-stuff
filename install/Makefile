@@ -22,6 +22,11 @@ export DEX_PASSWORD ?=dex-password
 export DEX_SECRET ?=dex-secret
 export DEX_USERNAME ?=dex-username
 
+export PROM_URL ?= prometheus-operated
+export OBSERVATORIUM_MONITORING ?= observatorium-monitoring
+export OBSERVATORIUM_MONITORING_GRAFANA ?= observatorium-grafana
+export OBSERVATORIUM_MONITORING_PROMETHEUS ?= observatorium-prometheus
+
 DEX_P_B := $(shell echo ${DEX_PASSWORD} | base64)
 DEX_S_B := $(shell echo ${DEX_SECRET} | base64)
 DEX_U_B := $(shell echo ${DEX_USERNAME} | base64)
@@ -130,6 +135,7 @@ uninstall/monitoring/global:
 .PHONY: install/observatorium
 install/observatorium:
 	make -C resources/observatorium all
+	make -C resources/monitoring-observatorium all
 
 .PHONY: install/observatorium-multitenant
 install/observatorium-multitenant:
@@ -138,6 +144,8 @@ install/observatorium-multitenant:
 .PHONY: uninstall/observatorium
 uninstall/observatorium:
 	make -C resources/observatorium clean
+	make -C resources/monitoring-observatorium clean
+
 
 .PHONY: test/chaos
 test/chaos:
@@ -189,5 +197,5 @@ uninstall/observability:
 all: install/strimzi/operator install/kafka/cr install/monitoring/global install/observability
 	@echo "done installing kafka monitoring demo"
 
-clean: uninstall/kafka/cr uninstall/strimzi/operator uninstall/monitoring/global uninstall/monitoring/cluster
+clean: uninstall/kafka/cr uninstall/strimzi/operator uninstall/monitoring/global uninstall/monitoring/cluster uninstall/monitoring/observatorium
 	@echo "done uninstalling kafka monitoring demo"

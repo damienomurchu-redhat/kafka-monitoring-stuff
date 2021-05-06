@@ -1,0 +1,143 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: <name>
+  namespace: <namespace>
+spec:
+  channel: beta
+  name: prometheus
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: <name>
+  namespace: <namespace>
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: <name>
+  namespace: <namespace>
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: <name>
+  namespace: <namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: <name>
+subjects:
+  - kind: ServiceAccount
+    name: <name>
+    namespace: <namespace>
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: <name>
+  namespace: <namespace>
+spec:
+  serviceAccountName: <name>
+  podMonitorNamespaceSelector: { }
+  podMonitorSelector: { }
+  externalLabels:
+    cluster_id: <cluster__id>
+  remoteWrite: [ ]
+  ruleSelector: { }
+  ruleNamespaceSelector: { }
+  serviceMonitorNamespaceSelector: { }
+  serviceMonitorSelector: { }
+---  
+kind: Service
+apiVersion: v1
+metadata:
+  name: <name>
+  namespace: <namespace>
+  labels: 
+    app: monitoring
+spec:
+  ports:
+    - name: web
+      protocol: TCP
+      port: 9091
+      targetPort: proxy
+    - name: upstream
+      protocol: TCP
+      port: 9090
+      targetPort: web
+  selector:
+    prometheus: observatorium-prometheus
+  type: ClusterIP
+  sessionAffinity: None
+---
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: thanos-metrics
+  namespace: <namespace>
+spec:
+  endpoints:
+    - targetPort: http
+  namespaceSelector:
+    matchNames:
+      - observatorium  
+  selector:
+    matchLabels: 
+      app.kubernetes.io/instance: observatorium-xyz
+---
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: prometheus-metrics
+  namespace: <namespace>
+spec:
+  endpoints:
+    - targetPort: web
+  selector:
+    matchLabels: 
+      app: monitoring
+---
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: loki-metrics
+  namespace: <namespace>
+spec:
+  endpoints:
+    - targetPort: metrics
+  namespaceSelector:
+    matchNames:
+      - observatorium
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: <name>
+  namespace: <namespace>
+spec:
+  to:
+    kind: Service
+    name: prometheus-operated
+    weight: 100
+  port:
+    targetPort: web
+  wildcardPolicy: None
