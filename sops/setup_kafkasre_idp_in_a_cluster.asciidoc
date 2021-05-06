@@ -1,0 +1,64 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Some SOP/Alert Name
+
+toc::[]
+
+== Description
+
+This SOP describes the process for configuring an OSD cluster for Access Control with the Kafka SRE Identity Provider.
+For Managed Kafka Data Plane clusters, this is done automatically by the kas-fleetmanager.
+However, for other clusters, such as the Managed Kafka Observatorium cluster, it is useful to configure the IdP for access.
+
+== Prerequisites
+
+* OCM cli access to the the OSD cluster
+* Admin access to the `rhoas-kafka-sre` realm in MAS SSO https://identity.api.openshift.com/auth/admin/rhoas-kafka-sre/console/#/realms/rhoas-kafka-sre
+
+== Execute/Resolution
+
+. Create a new OIDC Client in https://identity.api.openshift.com/auth/admin/rhoas-kafka-sre/console/#/realms/rhoas-kafka-sre
+.. The client ID and type of OIDC is sufficent for this part. Once created, take note of the client ID and the client secret in the Credentials tab
+. Get the cluster ID from ocm using `ocm list clusters`
+. Create a new Identity Provider in the cluster, taking care to set the variables below correctly
+....
+export CLUSTER_ID=<cluster_id>
+export CLIENT_ID=<sso_client_id>
+export CLIENT_SECRET=<sso_client_secret>
+export IDP_NAME=<an_identity_provider_name_to_appear_in_openshift>
+
+cat << EOF | ocm post /api/clusters_mgmt/v1/clusters/$CLUSTER_ID/identity_providers
+{"kind": "IdentityProvider","type": "OpenIDIdentityProvider","name": "$IDP_NAME","mapping_method": "claim","open_id": {"claims": {"email": ["email"],"name": ["last_name","preferred_username"],"preferred_username": ["preferred_username"]},"client_id": "$CLIENT_ID","client_secret": "$CLIENT_SECRET","issuer": "https://identity.api.openshift.com/auth/realms/rhoas-kafka-sre"}}
+EOF
+....
+. Run `CLUSTER_SEARCH_PATTERN=<search_pattern> -x ./permissions.sh -a`, replacing the value of `<search_pattern>` with the cluster name or matching pattern for more than 1 cluster. For example `CLUSTER_SEARCH_PATTERN=mk-observe bash -x ./permissions.sh -a`. This will add all RTS team members to the cluster-admins group in the cluster(s).
+. Back in MAS SSO, update the following settings for the Client
+.. Access Type -> confidential
+.. Standard Flow Enabled -> On
+.. Implicit Flow Enabled -> Off
+.. Direct Access Grants Enabled -> Off
+.. Service Accounts Enabled -> Off
+.. Valid Redirect URIs -> Set to the OpenShift oauth url i.e. https://oauth-openshift.apps.<cluster_dns>/oauth2callback/<IDP_NAME>. Alternatively you can get this full url from the OCM UI under the `Access Control` tab
+.. Web Origins -> Set to the root of the OpenShift oauth url i.e. https://oauth-openshift.apps.<cluster_dns>
+
+
+== Validate
+
+* Wait until the Identity provider is available as a login option in the OpenShift cluster. This can take a few minutes.
+* Verify you can login with the new Identity Provider and have cluster-admin permissions
+
+== Troubleshooting
+
+* Verify the Client ID & Secret of the Identity Provider match what is in MAS SSO.
+** If using `ocm post /api/clusters_mgmt/v1/clusters/$CLUSTER_ID/identity_providers` to check, only the client id will be returned. The OCM UI won't show the secret value either. The recommended way to verify the secret is correct is to copy over the secret again from MAS-SSO and update the Identity Provider in the OCM UI. 
+* Verify the Identity Provider was created and appears in the `Access Control` tab of the OCM UI or via `ocm get /api/clusters_mgmt/v1/clusters/$CLUSTER_ID/identity_providers`.
