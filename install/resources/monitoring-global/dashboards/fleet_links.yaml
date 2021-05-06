@@ -25,8 +25,8 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 8,
-      "iteration": 1620226311630,
+      "id": 10,
+      "iteration": 1620315551863,
       "links": [],
       "panels": [
         {
@@ -169,10 +169,11 @@ spec:
               }
             ]
           },
-          "pluginVersion": "7.3.10",
+          "pluginVersion": "7.3.1",
           "targets": [
             {
               "expr": "cluster_version{cluster_id=~\"$cluster_id\",type=\"cluster\"} * on(cluster_id) group_left(url) console_url",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -360,10 +361,11 @@ spec:
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "7.3.10",
+          "pluginVersion": "7.3.1",
           "targets": [
             {
               "expr": " sum(strimzi_resources{cluster_id=~\"$cluster_id\",kind=~\"Kafka\"}) by(cluster_id) * on(cluster_id) group_right() console_url ",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -544,10 +546,11 @@ spec:
               }
             ]
           },
-          "pluginVersion": "7.3.10",
+          "pluginVersion": "7.3.1",
           "targets": [
             {
               "expr": "label_replace(kube_namespace_created{cluster_id=~\"$cluster_id\"}, 'resource_namespace', '$1', 'namespace', '(.*)') * on(resource_namespace) group_left(cluster_id) strimzi_resource_state{cluster_id=~\"$cluster_id\"}",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -682,10 +685,11 @@ spec:
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "7.3.10",
+          "pluginVersion": "7.3.1",
           "targets": [
             {
               "expr": "(strimzi_resource_state{cluster_id=~\"$cluster_id\",kind=\"Kafka\"} == 1) + on(cluster_id) group_left(url) console_url",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -829,10 +833,11 @@ spec:
               }
             ]
           },
-          "pluginVersion": "7.3.10",
+          "pluginVersion": "7.3.1",
           "targets": [
             {
               "expr": "(strimzi_resource_state{cluster_id=~\"$cluster_id\",kind=\"Kafka\"} != 1) + on(cluster_id) group_left(url) console_url",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",

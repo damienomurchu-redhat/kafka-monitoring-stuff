@@ -163,6 +163,7 @@ spec:
           "targets": [
             {
               "expr": "topk(10, (strimzi_resource_state{resource_namespace=~\".*(?i:($search_id)).*\"} or strimzi_resource_state{name=~\".*(?i:($search_id)).*\"}) + on(cluster_id) group_left(url) console_url)",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -305,6 +306,7 @@ spec:
           "targets": [
             {
               "expr": "console_url{cluster_id=~\".*(?i:($search_id)).*\"} or console_url{url=~\".*(?i:($search_id)).*\"}",
+              "format": "table",
               "instant": true,
               "interval": "",
               "legendFormat": "",
