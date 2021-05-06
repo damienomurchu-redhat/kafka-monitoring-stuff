@@ -37,7 +37,7 @@ export CLIENT_ID=<sso_client_id>
 export CLIENT_SECRET=<sso_client_secret>
 export IDP_NAME=<an_identity_provider_name_to_appear_in_openshift>
 
-cat << EOF | ocm post /api/clusters_mgmt/v1/clusters/1jud6t7466uv6h6gfq2qdq261lmvb192/identity_providers
+cat << EOF | ocm post /api/clusters_mgmt/v1/clusters/$CLUSTER_ID/identity_providers
 {"kind": "IdentityProvider","type": "OpenIDIdentityProvider","name": "$IDP_NAME","mapping_method": "claim","open_id": {"claims": {"email": ["email"],"name": ["last_name","preferred_username"],"preferred_username": ["preferred_username"]},"client_id": "$CLIENT_ID","client_secret": "$CLIENT_SECRET","issuer": "https://identity.api.openshift.com/auth/realms/rhoas-kafka-sre"}}
 EOF
 ....
