@@ -82,7 +82,7 @@ spec:
       port: 9090
       targetPort: web
   selector:
-    prometheus: kafka-prometheus
+    prometheus: observatorium-prometheus
   type: ClusterIP
   sessionAffinity: None
 ---
