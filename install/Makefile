@@ -120,14 +120,6 @@ uninstall/kafka/cr:
 install/monitoring/global:
 	make -C resources/monitoring-global all
 
-.PHONY: install/monitoring/observatorium
-install/monitoring/observatorium:
-	make -C resources/monitoring-observatorium all
-
-.PHONY: uninstall/monitoring/observatorium
-uninstall/monitoring/observatorium:
-	make -C resources/monitoring-observatorium clean
-
 .PHONY: install/logging
 install/logging:
 	make -C resources/logging all
@@ -143,6 +135,7 @@ uninstall/monitoring/global:
 .PHONY: install/observatorium
 install/observatorium:
 	make -C resources/observatorium all
+	make -C resources/monitoring-observatorium all
 
 .PHONY: install/observatorium-multitenant
 install/observatorium-multitenant:
@@ -151,6 +144,8 @@ install/observatorium-multitenant:
 .PHONY: uninstall/observatorium
 uninstall/observatorium:
 	make -C resources/observatorium clean
+	make -C resources/monitoring-observatorium clean
+
 
 .PHONY: test/chaos
 test/chaos:

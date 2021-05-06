@@ -130,7 +130,15 @@ and uninstall it with:
 ```sh
 make uninstall/observatorium
 ```
+Monitoring of observatorium itself is also included with observatorium. 
 
+The following will be installed:
+* Grafana
+    * Dashboards
+* Promtheus
+    * Metrics from Thanos, Loki and Prometheus
+    * Alerts
+    
 #### Pointing the on cluster monitoring stack to observatorium
 
 You can point Prometheus remote write and Promtail to an existing Observatorium instance:
@@ -167,22 +175,6 @@ curl --request POST \
 
 __NOTE__: Observatorium is currently not part of the `all` or `clean` targets.
 
-## Install observatorium monitoring
-To install monitoring on observatorium itself run the following command:
-
-`make install/monitoring/observatorium`
-
-The following will be installed:
-* Grafana
-    * Dashboards
-* Promtheus
-    * Metrics from Thanos, Loki and Prometheus
-    * Alerts
-
-## Uninstall observatorium monitoring
-To install observatorium monitoring run the following command:
-
-`make uninstall/monitoring/observatorium`
 
 ## Uninstallation
 
