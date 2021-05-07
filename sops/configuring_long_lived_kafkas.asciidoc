@@ -28,7 +28,7 @@ The purpose of this SOP is to describe the process for managing Kafka Instances 
 
 . Modify the file at https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml
 .. Locate the `namespace` block with a `$ref` of `/services/managed-services/namespaces/managed-services-production.yml` for the production environment
-.. Update the `LONG_LIVED_KAFKAS` to add or remove the Kafka ID depending on if the instnace is being marked as long lived or being removed
+.. Update the `LONG_LIVED_KAFKAS` to add or remove the Kafka ID depending on if the instance is being marked as long lived or being removed
 . Open an MR and contact one of the approvers listed by the @devtools-bot. Once approved, the MR will be merged and configuration pushed out automatically.
 
 == Validate
