@@ -1,0 +1,41 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Configuring Long Lived Kafkas
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process for managing Kafka Instances that should *not* get deleted after the configured life span (typically 48 hours)
+
+== Prerequisites
+
+. Access to https://gitlab.cee.redhat.com/service/app-interface and ability to create a Merge Request (MR). 
+. The Kafka Instance ID to be marked or removed as 'long lived' e.g. `1sAUFaj2Cw2GWj91lMbtjwE4JMN`. This can be obtained by the Kafka instance owner from the Kafka Instances UI. Note this is case sensitive.
+. Optionally, view access to the Control Plane OSD cluster to verify the config change has been applied.
+
+== Execute/Resolution
+
+. Modify the file at https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-services/cicd/saas/saas-kas-fleet-manager.yaml
+.. Locate the `namespace` block with a `$ref` of `/services/managed-services/namespaces/managed-services-production.yml` for the production environment
+.. Update the `LONG_LIVED_KAFKAS` to add or remove the Kafka ID depending on if the instnace is being marked as long lived or being removed
+. Open an MR and contact one of the approvers listed by the @devtools-bot. Once approved, the MR will be merged and configuration pushed out automatically.
+
+== Validate
+
+* Verify the configmap data has been applied at https://console-openshift-console.apps.app-sre-prod-04.i5h0.p1.openshiftapps.com/k8s/ns/managed-services-production/configmaps/ocm-managed-services-long-lived-kafkas
+
+== Troubleshooting
+
+* Verify the ID is correct, taking care of case sensistivity
+* Ensure the correct environment configuration section has been updated in `saas-kas-fleet-manager.yaml`
