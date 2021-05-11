@@ -146,11 +146,6 @@ uninstall/observatorium:
 	make -C resources/observatorium clean
 	make -C resources/monitoring-observatorium clean
 
-
-.PHONY: test/chaos
-test/chaos:
-	make -C resources/testing-chaos all
-
 .PHONY: setup/observatorium
 setup/observatorium:
 	make -C resources/observatorium setup
